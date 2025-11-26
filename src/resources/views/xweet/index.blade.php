@@ -7,7 +7,6 @@
   <title>Xweet</title>
   <link rel="stylesheet" href="{{ asset('css/app.css') }}">
 </head>
-<body>
   <h1>Xweet</h1>
-  <button onClick="location.href='/user/{{$userName}}'">プロフィール</button>
-</body>
+  <button onClick="location.href='/xweet/create'">Xweet作成画面へ</button>
+  <button onClick="location.href='/user/{{$userName}}'">マイページへ</button>
