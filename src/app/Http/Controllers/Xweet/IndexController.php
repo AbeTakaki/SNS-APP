@@ -7,7 +7,7 @@ use Illuminate\Http\Request;
 
 class IndexController extends Controller
 {
-    public function __invoke(Request $request)
+    public function __invoke(Request $request) : string
     {
         return view('xweet.index', ['userName' => 'user1']);
     }

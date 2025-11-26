@@ -18,5 +18,6 @@ Route::middleware('auth')->group(function () {
 });
 
 Route::get('/xweet', \App\Http\Controllers\Xweet\IndexController::class);
+Route::get('/user/{userName}', \App\Http\Controllers\User\UserController::class);
 
 require __DIR__.'/auth.php';
