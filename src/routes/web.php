@@ -17,8 +17,12 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
-Route::get('/xweet', \App\Http\Controllers\Xweet\IndexController::class);
-Route::get('/xweet/create', \App\Http\Controllers\Xweet\Create\CreateController::class);
+// Xweet関連
+Route::get('/xweet', \App\Http\Controllers\Xweet\IndexController::class)->name('xweet.index');
+Route::get('/xweet/create', \App\Http\Controllers\Xweet\Create\CreateController::class)->middleware('auth');
+Route::post('/xweet/create', \App\Http\Controllers\Xweet\Create\PostController::class)->middleware('auth');
+
+// ユーザー関連
 Route::get('/user/{userName}', \App\Http\Controllers\User\UserController::class);
 Route::get('/user/{userName}/follows', \App\Http\Controllers\User\FollowsController::class);
 Route::get('/user/{userName}/followers', \App\Http\Controllers\User\FollowersController::class);
