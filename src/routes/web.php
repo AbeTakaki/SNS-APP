@@ -23,6 +23,7 @@ Route::get('/xweet/create', \App\Http\Controllers\Xweet\Create\CreateController:
 Route::post('/xweet/create', \App\Http\Controllers\Xweet\Create\PostController::class)->middleware('auth');
 Route::get('/xweet/update/{xweetId}', \App\Http\Controllers\Xweet\Update\UpdateController::class)->middleware('auth')->name('xweet.update');
 Route::put('/xweet/update/{xweetId}', \App\Http\Controllers\Xweet\Update\PutController::class)->middleware('auth')->name('xweet.update.put');
+Route::delete('/xweet/delete/{xweetId}', \App\Http\Controllers\Xweet\Delete\DeleteController::class)->middleware('auth')->name('xweet.delete');
 
 // ユーザー関連
 Route::get('/user/{userName}', \App\Http\Controllers\User\UserController::class);

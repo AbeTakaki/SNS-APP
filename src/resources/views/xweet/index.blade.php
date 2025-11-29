@@ -18,6 +18,11 @@
     {{ $xweet->content }} by {{ $xweet->getDisplayName() }} posted on {{ $xweet->created_at }}
     @if(\Illuminate\Support\Facades\Auth::id() === $xweet->user_id)
       <a href="{{route('xweet.update',['xweetId'=>$xweet->id])}}">更新</a>
+      <form style="display:inline" action="{{ route('xweet.delete',['xweetId'=>$xweet->id])}}" method="post">
+        @method('DELETE')
+        @csrf
+        <button type="submit">削除</button>
+      </form>
     @endif
     <br>
   @endforeach
