@@ -13,8 +13,12 @@
     <button onClick="location.href='/xweet/create'">Xweet作成画面へ</button>
     <button onClick="location.href='/user/{{$userName}}'">マイページへ</button>
   @endif
-  
+  <hr>
   @foreach ($xweets as $xweet)
-    <p>{{ $xweet->content }} by {{ $xweet->getDisplayName() }} posted on {{ $xweet->created_at }}</p>
+    {{ $xweet->content }} by {{ $xweet->getDisplayName() }} posted on {{ $xweet->created_at }}
+    @if(\Illuminate\Support\Facades\Auth::id() === $xweet->user_id)
+      <a href="{{route('xweet.update',['xweetId'=>$xweet->id])}}">更新</a>
+    @endif
+    <br>
   @endforeach
 </html>
