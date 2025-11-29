@@ -8,5 +8,22 @@
   <link rel="stylesheet" href="{{ asset('css/app.css') }}">
 </head>
   <h1>Xweet</h1>
-  <button onClick="location.href='/xweet/create'">Xweet作成画面へ</button>
-  <button onClick="location.href='/user/{{$userName}}'">マイページへ</button>
+  <!-- ログイン状態のとき表示 -->
+  @if(\Illuminate\Support\Facades\Auth::check())
+    <button onClick="location.href='/xweet/create'">Xweet作成画面へ</button>
+    <button onClick="location.href='/user/{{$userName}}'">マイページへ</button>
+  @endif
+  <hr>
+  @foreach ($xweets as $xweet)
+    {{ $xweet->content }} by {{ $xweet->getDisplayName() }} posted on {{ $xweet->created_at }}
+    @if(\Illuminate\Support\Facades\Auth::id() === $xweet->user_id)
+      <a href="{{route('xweet.update',['xweetId'=>$xweet->id])}}">更新</a>
+      <form style="display:inline" action="{{ route('xweet.delete',['xweetId'=>$xweet->id])}}" method="post">
+        @method('DELETE')
+        @csrf
+        <button type="submit">削除</button>
+      </form>
+    @endif
+    <br>
+  @endforeach
+</html>
