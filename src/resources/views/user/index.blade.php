@@ -10,8 +10,11 @@
 </head>
 <body>
   <h1>Xweet</h1>
-  <h2>{{ $userName }}さんのページ</h2>
+  <h2>{{ $displayName }}さんのページ</h2>
   <button onClick="location.href='/user/{{$userName}}/follows'">フォローリストへ</button>
   <button onClick="location.href='/user/{{$userName}}/followers'">フォロワーリストへ</button>
+  @foreach ($xweets as $xweet)
+    <p>{{ $xweet->content }} by {{ $xweet->getDisplayName() }} posted on {{ $xweet->created_at }}</p>
+  @endforeach
 </body>
 </html>
