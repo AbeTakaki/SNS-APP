@@ -10,7 +10,7 @@ RUN apt-get update && \
     rm -rf /var/lib/apt/lists/* && \
     docker-php-ext-install intl pdo_mysql zip bcmath && \
     groupadd gphp && \
-    useradd php -g gphp
+    useradd -m php -g gphp
 
 # デフォルト命令を実行するユーザをrootからphpユーザに変更
 USER php
