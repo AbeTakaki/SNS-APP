@@ -31,6 +31,8 @@ Route::get('/user/{userName}/follows', \App\Http\Controllers\User\FollowsControl
 Route::get('/user/{userName}/followers', \App\Http\Controllers\User\FollowersController::class);
 Route::post('/user/{userName}/follow', \App\Http\Controllers\User\FollowAction\FollowUserController::class)->middleware('auth');
 Route::delete('/user/{userName}/unfollow',\App\Http\Controllers\User\FollowAction\UnFollowUserController::class)->middleware('auth');
+Route::get('/user/{userName}/edit', \App\Http\Controllers\User\Edit\EditController::class)->middleware('auth')->name('user.edit');
+Route::put('/user/{userName}/edit', \App\Http\Controllers\User\Edit\EditPutController::class)->middleware('auth')->name('user.edit.put');
 
 // チャット関連
 Route::get('/chat/{chatId}', \App\Http\Controllers\Chat\ChatController::class)->middleware('auth')->name('chat.index');

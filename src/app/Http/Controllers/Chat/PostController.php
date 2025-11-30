@@ -20,7 +20,7 @@ class PostController extends Controller
         $chatId=$request->getChatId();
         $chat=Chat::where('id',$chatId)->firstOrFail();
         if($chat->user1_id===$userId || $chat->user2_id===$userId){
-            $message=new Message;
+            $message = new Message;
             $message->chat_id=$chatId;
             $message->mentioned_user_id=$userId;
             $message->content=$request->getMessage();

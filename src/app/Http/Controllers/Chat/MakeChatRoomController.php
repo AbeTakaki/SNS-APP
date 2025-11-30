@@ -7,13 +7,15 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Models\Chat;
 use App\Models\User;
+use Illuminate\Http\RedirectResponse;
+use Illuminate\View\View;
 
 class MakeChatRoomController extends Controller
 {
     /**
      * Handle the incoming request.
      */
-    public function __invoke(Request $request, string $userName)
+    public function __invoke(Request $request, string $userName): RedirectResponse
     {
         $user1 = Auth::id();
         $user = User::where('user_name',$userName)->firstOrFail();
