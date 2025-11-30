@@ -5,8 +5,10 @@ namespace App\Http\Controllers\User;
 use Illuminate\View\View;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use App\Models\User;
 use App\Models\Xweet;
+use App\Models\Follows;
 
 /**
  * Class UserController
@@ -22,11 +24,22 @@ class UserController extends Controller
     {
         $user = User::where('user_name', $userName)->firstOrFail();
         $xweets = Xweet::where('user_id', $user->id)->get();
+        $following = Auth::id();
+        $follower = $user->id;
+        $follows = Follows::where([
+            ['following_user_id', $following],
+            ['followed_user_id', $follower],
+        ])->first();
+
+        $isFollowing = false;
+        if($follows) $isFollowing = true;
 
         return view('user.index')->with([
+            'id' => $user->id,
             'userName' => $user->user_name,
             'displayName' => $user->display_name,
             'xweets' => $xweets,
+            'isFollowing' => $isFollowing,
         ]);
     }
 }
