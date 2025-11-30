@@ -1,7 +1,25 @@
 <?php
 
+use App\Http\Controllers\Chat\ChatController;
+use App\Http\Controllers\Chat\MakeChatRoomController;
+use App\Http\Controllers\Chat\PostController as ChatPostController; // エイリアスを使用
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\User\Edit\EditController;
+use App\Http\Controllers\User\Edit\EditPutController;
+use App\Http\Controllers\User\FollowAction\FollowUserController;
+use App\Http\Controllers\User\FollowAction\UnFollowUserController;
+use App\Http\Controllers\User\FollowersController;
+use App\Http\Controllers\User\FollowsController;
+use App\Http\Controllers\User\UserController;
+use App\Http\Controllers\Xweet\Create\CreateController;
+use App\Http\Controllers\Xweet\Create\PostController as XweetPostController; // エイリアスを使用
+use App\Http\Controllers\Xweet\Delete\DeleteController;
+use App\Http\Controllers\Xweet\IndexController;
+use App\Http\Controllers\Xweet\Update\PutController;
+use App\Http\Controllers\Xweet\Update\UpdateController;
 use Illuminate\Support\Facades\Route;
+
+// --- 基本ルート ---
 
 Route::get('/', function () {
     return view('welcome');
@@ -17,26 +35,63 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
-// Xweet関連
-Route::get('/xweet', \App\Http\Controllers\Xweet\IndexController::class)->name('xweet.index');
-Route::get('/xweet/create', \App\Http\Controllers\Xweet\Create\CreateController::class)->middleware('auth');
-Route::post('/xweet/create', \App\Http\Controllers\Xweet\Create\PostController::class)->middleware('auth');
-Route::get('/xweet/update/{xweetId}', \App\Http\Controllers\Xweet\Update\UpdateController::class)->middleware('auth')->name('xweet.update');
-Route::put('/xweet/update/{xweetId}', \App\Http\Controllers\Xweet\Update\PutController::class)->middleware('auth')->name('xweet.update.put');
-Route::delete('/xweet/delete/{xweetId}', \App\Http\Controllers\Xweet\Delete\DeleteController::class)->middleware('auth')->name('xweet.delete');
+// --- Xweet関連 ---
 
-// ユーザー関連
-Route::get('/user/{userName}', \App\Http\Controllers\User\UserController::class)->name('user.index');
-Route::get('/user/{userName}/follows', \App\Http\Controllers\User\FollowsController::class);
-Route::get('/user/{userName}/followers', \App\Http\Controllers\User\FollowersController::class);
-Route::post('/user/{userName}/follow', \App\Http\Controllers\User\FollowAction\FollowUserController::class)->middleware('auth');
-Route::delete('/user/{userName}/unfollow',\App\Http\Controllers\User\FollowAction\UnFollowUserController::class)->middleware('auth');
-Route::get('/user/{userName}/edit', \App\Http\Controllers\User\Edit\EditController::class)->middleware('auth')->name('user.edit');
-Route::put('/user/{userName}/edit', \App\Http\Controllers\User\Edit\EditPutController::class)->middleware('auth')->name('user.edit.put');
+// --- 公開ルート ---
+// GET /xweet は認証不要のため、グループの外に残す
+Route::get('/xweet', IndexController::class)->name('xweet.index'); 
 
-// チャット関連
-Route::get('/chat/{chatId}', \App\Http\Controllers\Chat\ChatController::class)->middleware('auth')->name('chat.index');
-Route::post('/chat/{chatId}', \App\Http\Controllers\Chat\PostController::class)->middleware('auth');
-Route::post('/user/{userName}/chat', \App\Http\Controllers\Chat\MakeChatRoomController::class)->middleware('auth');
+// --- 認証必須ルート ---
+Route::prefix('xweet')->middleware('auth')->group(function () {
+    // GET /xweet/create
+    Route::get('create', CreateController::class);
+    // POST /xweet/create
+    Route::post('create', XweetPostController::class);
+    // GET /xweet/update/{xweetId}
+    Route::get('update/{xweetId}', UpdateController::class)->name('xweet.update');
+    // PUT /xweet/update/{xweetId}
+    Route::put('update/{xweetId}', PutController::class)->name('xweet.update.put');
+    // DELETE /xweet/delete/{xweetId}
+    Route::delete('delete/{xweetId}', DeleteController::class)->name('xweet.delete');
+});
+
+// --- チャット関連 ---
+
+Route::prefix('chat')->middleware('auth')->group(function () {
+    // GET /chat/{chatId} (チャットルーム表示)
+    Route::get('{chatId}', ChatController::class)->name('chat.index');
+    // POST /chat/{chatId} (メッセージ投稿)
+    Route::post('{chatId}', ChatPostController::class);
+});
+
+// --- ユーザー関連 ---
+
+// ルートのプレフィックスにパラメータを含めず、静的な /user のみを使用
+Route::prefix('user')->group(function () {
+    // GET /user/{userName}
+    Route::get('{userName}', UserController::class)->name('user.index');
+
+    // 認証が必要なユーザー操作
+    Route::middleware('auth')->group(function () {
+        // POST /user/{userName}/follow
+        Route::post('{userName}/follow', FollowUserController::class);
+        // DELETE /user/{userName}/unfollow
+        Route::delete('{userName}/unfollow', UnFollowUserController::class);
+
+        // GET /user/{userName}/follows
+        Route::get('{userName}/follows', FollowsController::class);
+        // GET /user/{userName}/followers
+        Route::get('{userName}/followers', FollowersController::class);
+
+        // GET /user/{userName}/edit
+        Route::get('{userName}/edit', EditController::class)->name('user.edit');
+        // PUT /user/{userName}/edit
+        Route::put('{userName}/edit', EditPutController::class)->name('user.edit.put');
+
+        // POST /user/{userName}/chat (チャットルーム作成)
+        // ルートの競合を避けるため、chat関連は下にまとめることを推奨しますが、ここでは元の位置を尊重しつつ修正
+        Route::post('{userName}/chat', MakeChatRoomController::class); 
+    });
+});
 
 require __DIR__.'/auth.php';
