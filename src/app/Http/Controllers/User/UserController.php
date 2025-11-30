@@ -23,7 +23,7 @@ class UserController extends Controller
     public function __invoke(Request $request, string $userName) : View
     {
         $user = User::where('user_name', $userName)->firstOrFail();
-        $xweets = Xweet::where('user_id', $user->id)->get();
+        $xweets = Xweet::where('user_id', $user->id)->orderBy('created_at','DESC')->get();
         $following = Auth::id();
         $follower = $user->id;
         $follows = Follows::where([

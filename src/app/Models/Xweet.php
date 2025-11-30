@@ -38,5 +38,10 @@ class Xweet extends Model
     {
         return $this->user->display_name;
     }
+
+    public function getUserName()
+    {
+        return $this->user->user_name;
+    }
 }
 

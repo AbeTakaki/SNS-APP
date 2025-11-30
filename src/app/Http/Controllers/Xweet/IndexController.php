@@ -26,7 +26,7 @@ class IndexController extends Controller
                 $followUserIds[] = $user->followed_user_id;
             }
 
-            $xweets = Xweet::whereIn('user_id', $followUserIds)->get();
+            $xweets = Xweet::whereIn('user_id', $followUserIds)->orderBy('created_at','DESC')->get();
 
             $loginUser = User::where('id', $loginId)->first();
             return view('xweet.index')->with([
@@ -34,7 +34,7 @@ class IndexController extends Controller
                 'xweets' => $xweets,
             ]);
         } else {
-            $xweets = Xweet::all();
+            $xweets = Xweet::orderBy('created_at','DESC')->get();
             return view('xweet.index')->with([
                 'xweets' => $xweets,
             ]);
