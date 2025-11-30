@@ -14,12 +14,22 @@
   <button onClick="location.href='/user/{{$userName}}/follows'">フォローリストへ</button>
   <button onClick="location.href='/user/{{$userName}}/followers'">フォロワーリストへ</button>
   @if (\Illuminate\Support\Facades\Auth::id() !== $id)
-    <div>
-      <form action="/user/{{$userName}}/follow" method="post">
-         @csrf
-          <button type="submit">フォローする</button>
-      </form>
-    </div>
+    @if(!$isFollowing)
+      <div>
+        <form action="/user/{{$userName}}/follow" method="post">
+          @csrf
+            <button type="submit">フォローする</button>
+        </form>
+      </div>
+    @else
+      <div>
+        <form action="/user/{{$userName}}/unfollow" method="post">
+          @method('DELETE')
+          @csrf
+          <button type="submit">フォロー解除</button>
+        </form>
+      </div>
+      @endif
   @endif
 
   @foreach ($xweets as $xweet)
