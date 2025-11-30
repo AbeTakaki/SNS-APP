@@ -15,6 +15,7 @@
   <button onClick="location.href='/user/{{$userName}}/followers'">フォロワーリストへ</button>
   @if (\Illuminate\Support\Facades\Auth::id() !== $id)
     @if(!$isFollowing)
+      {{-- フォロー --}}
       <div>
         <form action="/user/{{$userName}}/follow" method="post">
           @csrf
@@ -22,6 +23,7 @@
         </form>
       </div>
     @else
+      {{-- アンフォロー --}}
       <div>
         <form action="/user/{{$userName}}/unfollow" method="post">
           @method('DELETE')
@@ -30,6 +32,13 @@
         </form>
       </div>
       @endif
+      {{-- チャット開始 --}}
+      <div>
+          <form action="/user/{{$userName}}/chat" method="post">
+              @csrf
+              <button type="submit">チャットを開始</button>
+          </form>
+      </div>
   @endif
 
   @foreach ($xweets as $xweet)
