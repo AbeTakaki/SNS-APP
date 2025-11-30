@@ -8,13 +8,14 @@ use Illuminate\Support\Facades\Auth;
 use App\Models\Chat;
 use App\Models\Message;
 use App\Models\User;
+use Illuminate\View\View;
 
 class ChatController extends Controller
 {
     /**
      * Handle the incoming request.
      */
-    public function __invoke(Request $request, int $chatId)
+    public function __invoke(Request $request, int $chatId): View
     {
         $userId=Auth::id();
         $chat=Chat::where('id',$chatId)->firstOrFail();

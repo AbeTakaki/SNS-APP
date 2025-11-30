@@ -38,6 +38,7 @@ class UserController extends Controller
             'id' => $user->id,
             'userName' => $user->user_name,
             'displayName' => $user->display_name,
+            'profile' => $user->profile,
             'xweets' => $xweets,
             'isFollowing' => $isFollowing,
         ]);

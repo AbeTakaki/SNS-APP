@@ -11,6 +11,7 @@
 <body>
   <h1>Xweet</h1>
   <h2>{{ $displayName }}さんのページ</h2>
+  <p>{{$profile}}</p>
   <button onClick="location.href='/user/{{$userName}}/follows'">フォローリストへ</button>
   <button onClick="location.href='/user/{{$userName}}/followers'">フォロワーリストへ</button>
   @if (\Illuminate\Support\Facades\Auth::id() !== $id)
