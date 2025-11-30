@@ -32,7 +32,7 @@
           <button type="submit">フォロー解除</button>
         </form>
       </div>
-      @endif
+    @endif
       {{-- チャット開始 --}}
       <div>
           <form action="/user/{{$userName}}/chat" method="post">
@@ -40,6 +40,10 @@
               <button type="submit">チャットを開始</button>
           </form>
       </div>
+  @else
+    <div>
+      <button onClick="location.href='/user/{{$userName}}/edit'">プロフィールを編集</button>
+    </div>
   @endif
 
   @foreach ($xweets as $xweet)

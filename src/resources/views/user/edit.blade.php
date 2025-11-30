@@ -10,7 +10,7 @@
 <body>
     <h1>Xweet</h1>
     <h2>プロフィールを編集</h2>
-    <form action="" method="POST">
+    <form action="{{route('user.edit.put',['userName'=>$userName])}}" method="POST">
         @method('PUT')
         @csrf
         <p>表示名</p>
