@@ -13,6 +13,15 @@
   <h2>{{ $displayName }}さんのページ</h2>
   <button onClick="location.href='/user/{{$userName}}/follows'">フォローリストへ</button>
   <button onClick="location.href='/user/{{$userName}}/followers'">フォロワーリストへ</button>
+  @if (\Illuminate\Support\Facades\Auth::id() !== $id)
+    <div>
+      <form action="/user/{{$userName}}/follow" method="post">
+         @csrf
+          <button type="submit">フォローする</button>
+      </form>
+    </div>
+  @endif
+
   @foreach ($xweets as $xweet)
     <p>{{ $xweet->content }} by {{ $xweet->getDisplayName() }} posted on {{ $xweet->created_at }}</p>
   @endforeach

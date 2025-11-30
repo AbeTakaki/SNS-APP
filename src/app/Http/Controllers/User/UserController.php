@@ -24,6 +24,7 @@ class UserController extends Controller
         $xweets = Xweet::where('user_id', $user->id)->get();
 
         return view('user.index')->with([
+            'id' => $user->id,
             'userName' => $user->user_name,
             'displayName' => $user->display_name,
             'xweets' => $xweets,

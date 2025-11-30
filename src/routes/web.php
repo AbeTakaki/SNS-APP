@@ -26,8 +26,9 @@ Route::put('/xweet/update/{xweetId}', \App\Http\Controllers\Xweet\Update\PutCont
 Route::delete('/xweet/delete/{xweetId}', \App\Http\Controllers\Xweet\Delete\DeleteController::class)->middleware('auth')->name('xweet.delete');
 
 // ユーザー関連
-Route::get('/user/{userName}', \App\Http\Controllers\User\UserController::class);
+Route::get('/user/{userName}', \App\Http\Controllers\User\UserController::class)->name('user.index');
 Route::get('/user/{userName}/follows', \App\Http\Controllers\User\FollowsController::class);
 Route::get('/user/{userName}/followers', \App\Http\Controllers\User\FollowersController::class);
+Route::post('user/{userName}/follow', \App\Http\Controllers\User\FollowAction\FollowUserController::class)->middleware('auth');
 
 require __DIR__.'/auth.php';
