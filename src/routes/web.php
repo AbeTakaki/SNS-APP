@@ -32,4 +32,9 @@ Route::get('/user/{userName}/followers', \App\Http\Controllers\User\FollowersCon
 Route::post('/user/{userName}/follow', \App\Http\Controllers\User\FollowAction\FollowUserController::class)->middleware('auth');
 Route::delete('/user/{userName}/unfollow',\App\Http\Controllers\User\FollowAction\UnFollowUserController::class)->middleware('auth');
 
+// チャット関連
+Route::get('/chat/{chatId}', \App\Http\Controllers\Chat\ChatController::class)->middleware('auth')->name('chat.index');
+Route::post('/chat/{chatId}', \App\Http\Controllers\Chat\PostController::class)->middleware('auth');
+Route::post('/user/{userName}/chat', \App\Http\Controllers\Chat\MakeChatRoomController::class)->middleware('auth');
+
 require __DIR__.'/auth.php';
