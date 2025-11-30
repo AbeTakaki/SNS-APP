@@ -34,4 +34,9 @@ insert into follows (following_user_id,followed_user_id,created_at,updated_at) v
 insert into follows (following_user_id,followed_user_id,created_at,updated_at) values (2,1,now(),now());
 insert into follows (following_user_id,followed_user_id,created_at,updated_at) values (2,4,now(),now());
 insert into follows (following_user_id,followed_user_id,created_at,updated_at) values (3,4,now(),now());
+
+insert into chats (user1_id,user2_id,created_at,updated_at) values (1,2,now(),now());
+insert into messages (chat_id,mentioned_user_id,content,created_at,updated_at) values (1,1,'I am user1.',now(),now());
+insert into messages (chat_id,mentioned_user_id,content,created_at,updated_at) values (1,2,'I am user2.',now(),now());
+update users set profile="Student." where id=1;
 ```
