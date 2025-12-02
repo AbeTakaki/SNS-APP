@@ -14,16 +14,12 @@ class PutController extends Controller
     /**
      * Handle the incoming request.
      */
-    public function __invoke(UpdateRequest $request) : RedirectResponse | abort
+    public function __invoke(UpdateRequest $request) : RedirectResponse
     {
-        $userId = Auth::id();
         $xweet = Xweet::where('id', $request->getId())->firstOrFail();
-        if ($userId === $xweet->user_id) {
-            $xweet->content = $request->getXweet();
-            $xweet->save();
-            return redirect()->route('xweet.index');
-        } else {
-            abort(403);
-        }
+        if(Auth::user()->cannot('update', $xweet)) abort(403);
+        $xweet->content = $request->getXweet();
+        $xweet->save();
+        return redirect()->route('xweet.index');
     }
 }

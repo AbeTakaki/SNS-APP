@@ -17,11 +17,8 @@ class DeleteController extends Controller
         $userId = Auth::id();
         $xweetId = (int)$request->route('xweetId');
         $xweet = Xweet::where('id', $xweetId)->firstOrFail();
-        if($userId === $xweet->user_id) {
-            $xweet->delete();
-            return redirect()->route('xweet.index');
-        } else {
-            abort(403);
-        }
+        if(Auth::user()->cannot('delete', $xweet)) abort(403);
+        $xweet->delete();
+        return redirect()->route('xweet.index');
     }
 }

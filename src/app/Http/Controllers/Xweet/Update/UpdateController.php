@@ -13,15 +13,11 @@ class UpdateController extends Controller
     /**
      * Handle the incoming request.
      */
-    public function __invoke(Request $request) : View | abort
+    public function __invoke(Request $request) : View
     {
-        $userId = Auth::id();
         $xweetId = (int)$request->route('xweetId');
         $xweet = Xweet::where('id', $xweetId)->firstOrFail();
-        if ($userId === $xweet->user_id) {
-            return view('xweet.update')->with('xweet',$xweet);
-        } else {
-            abort(403);
-        }
+        if(Auth::user()->cannot('update', $xweet)) abort(403);
+        return view('xweet.update')->with('xweet',$xweet);
     }
 }
