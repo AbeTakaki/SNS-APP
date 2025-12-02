@@ -45,4 +45,17 @@ class User extends Authenticatable
     {
         return $this->hasMany(Xweet::class);
     }
+
+    // images リレーション
+    public function image()
+    {
+        return $this->hasOne(Image::class,'id','profile_image_id');
+    }
+
+    // 画像パスの取得関数
+    public function getImagePath()
+    {
+        if($this->profile_image_id) return $this->image->path;
+        else return null;
+    }
 }

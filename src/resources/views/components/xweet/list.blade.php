@@ -6,11 +6,22 @@
     <ul>
         @foreach($xweets as $xweet)
         <li class="border-b last:border-0 border-gray-200 p-4">
-            <span class="inline-block rounded-full px-2 py-1 text-s font-bold mb-1">
-                <a href="{{route('user.index',['userName'=>$xweet->getUserName()])}}">{{$xweet->getDisplayName()}}</a> 
-            </span>
+            <div class="flex">
+
+                @if($xweet->getImagePath())
+                    <img src="{{ asset('storage/app/public/'.$xweet->getImagePath()) }}" alt="profile image" width="60" height="60" class="object-contain">
+                @else
+                    <img src="{{ asset('storage/app/public/default_profile_icon.png') }}" alt="profile image" width="60" height="60" class="object-contain">
+                @endif
+
+                <div class="ml-4">
+                    <span class="inline-block rounded-full px-2 py-1 text-s font-bold mb-1">
+                        <a href="{{route('user.index',['userName'=>$xweet->getUserName()])}}">{{$xweet->getDisplayName()}}</a> 
+                    </span>
             
-            <p class="text-gray-600 px-2 mb-1">{!!nl2br(e($xweet->content))!!}</p>
+                    <p class="text-gray-600 px-2 mb-1">{!!nl2br(e($xweet->content))!!}</p>
+                </div>
+            </div>
             <p class="text-xs text-right">posted on {{$xweet->created_at}}</p>
             
             @if(\Illuminate\Support\Facades\Auth::id()===$xweet->user_id)

@@ -4,7 +4,7 @@
     'profile'=>'',
 ])
 
-<form action="{{route('user.edit.put',['userName'=>$userName])}}" method="post">
+<form action="{{route('user.edit.put',['userName'=>$userName])}}" method="post" enctype="multipart/form-data">
     @method('PUT')
     @csrf
     <div class="mb-4">
@@ -33,13 +33,27 @@
         <label for="input3" class="text-m text-gray-700 block mb-1 font-bold">
             プロフィール画像
         </label>
-        <!-- ここに画像アップロード機能を実装予定 -->
+        <!-- 画像アップロード -->
+        <input 
+            type="file" 
+            name="input3" 
+            id="input3" 
+            class="block w-full text-sm text-slate-500
+                file:mr-4 file:py-2 file:px-4
+                file:rounded-full file:border-0
+                file:text-sm file:font-semibold
+                file:bg-gray-50 file:text-gray-700
+                hover:file:bg-gray-100" 
+        >
     </div>
 
     @error('input1')
         <p style="color:red;">{{$message}}</p>
     @enderror
     @error('input2')
+        <p style="color:red;">{{$message}}</p>
+    @enderror
+    @error('input3')
         <p style="color:red;">{{$message}}</p>
     @enderror
 

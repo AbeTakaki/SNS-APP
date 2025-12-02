@@ -42,3 +42,11 @@ insert into messages (chat_id,mentioned_user_id,content,created_at,updated_at) v
 insert into messages (chat_id,mentioned_user_id,content,created_at,updated_at) values (1,2,'I am user2.',now(),now());
 update users set profile="Student." where id=1;
 ```
+
+# プロフィール画像の登録（ダミー）
+```
+insert into images (path,created_at,updated_at) values ('profile_icon.png',now(),now());
+update users set profile_image_id=1 where id=1;
+
+update images set path='profile_icon.jpeg' where id=1;
+```

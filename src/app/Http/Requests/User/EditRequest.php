@@ -31,6 +31,11 @@ class EditRequest extends FormRequest
             'input2' => [
                 'max:255',
             ],
+            'input3'=> [
+                'image',
+                'mimes:jpeg,jpg,png,gif',
+                'max:1024',
+            ]
         ];
     }
 
@@ -42,5 +47,10 @@ class EditRequest extends FormRequest
     public function getInput2()
     {
        return $this->input('input2');
+    }
+
+    public function getInput3()
+    {
+        return $this->file('input3');
     }
 }
