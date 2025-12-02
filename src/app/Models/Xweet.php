@@ -43,5 +43,10 @@ class Xweet extends Model
     {
         return $this->user->user_name;
     }
+
+    public function getImagePath()
+    {
+        return $this->user->getImagePath();
+    }
 }
 
