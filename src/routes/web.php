@@ -44,7 +44,7 @@ Route::get('/xweet', IndexController::class)->name('xweet.index');
 // --- 認証必須ルート ---
 Route::prefix('xweet')->middleware('auth')->group(function () {
     // GET /xweet/create
-    Route::get('create', CreateController::class);
+    Route::get('create', CreateController::class)->name('xweet.create');
     // POST /xweet/create
     Route::post('create', XweetPostController::class);
     // GET /xweet/update/{xweetId}
@@ -79,9 +79,9 @@ Route::prefix('user')->group(function () {
         Route::delete('{userName}/unfollow', UnFollowUserController::class);
 
         // GET /user/{userName}/follows
-        Route::get('{userName}/follows', FollowsController::class);
+        Route::get('{userName}/follows', FollowsController::class)->name('user.follows');
         // GET /user/{userName}/followers
-        Route::get('{userName}/followers', FollowersController::class);
+        Route::get('{userName}/followers', FollowersController::class)->name('user.followers');
 
         // GET /user/{userName}/edit
         Route::get('{userName}/edit', EditController::class)->name('user.edit');
