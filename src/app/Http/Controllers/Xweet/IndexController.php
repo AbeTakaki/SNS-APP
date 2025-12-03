@@ -9,32 +9,25 @@ use Illuminate\View\View;
 use Illuminate\Support\Facades\Auth;
 use App\Models\User;
 use App\Models\Follows;
+use App\Services\XweetService;
+use App\Services\UserService;
 
 class IndexController extends Controller
 {
-    public function __invoke(Request $request) : View
+    public function __invoke(Request $request, XweetService $xweetService, UserService $userService) : View
     {
         $loginId = Auth::id();
 
         if ($loginId) {
-            $users =  Follows::where('following_user_id', $loginId)->get();
-            $followUserIds = array(
-                0 => (int)$loginId,
-            );
+            $xweets = $xweetService->getFollowsXweets($loginId);
+            $loginUserName = $userService->getUserById($loginId)->user_name;
 
-            foreach($users as $user) {
-                $followUserIds[] = $user->followed_user_id;
-            }
-
-            $xweets = Xweet::whereIn('user_id', $followUserIds)->orderBy('created_at','DESC')->get();
-
-            $loginUser = User::where('id', $loginId)->first();
             return view('xweet.index')->with([
-                'userName' => $loginUser->user_name,
+                'userName' => $loginUserName,
                 'xweets' => $xweets,
             ]);
         } else {
-            $xweets = Xweet::orderBy('created_at','DESC')->get();
+            $xweets = $xweetService->getAllXweets();
             return view('xweet.index')->with([
                 'xweets' => $xweets,
             ]);
