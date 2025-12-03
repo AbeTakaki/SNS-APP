@@ -16,18 +16,14 @@ class PostController extends Controller
      */
     public function __invoke(CreateRequest $request): RedirectResponse
     {
-        $userId=Auth::id();
         $chatId=$request->getChatId();
         $chat=Chat::where('id',$chatId)->firstOrFail();
-        if($chat->user1_id===$userId || $chat->user2_id===$userId){
-            $message = new Message;
-            $message->chat_id=$chatId;
-            $message->mentioned_user_id=$userId;
-            $message->content=$request->getMessage();
-            $message->save();
-            return redirect()->route('chat.index',['chatId'=>$chatId]);
-        }else{
-            abort(403);
-       }
+        if(Auth::user()->cannot('enter', $chat)) abort(403);
+        $message = new Message;
+        $message->chat_id=$chatId;
+        $message->mentioned_user_id=Auth::id();
+        $message->content=$request->getMessage();
+        $message->save();
+        return redirect()->route('chat.index',['chatId'=>$chatId]);
     }
 }

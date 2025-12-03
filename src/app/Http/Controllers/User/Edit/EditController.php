@@ -16,14 +16,11 @@ class EditController extends Controller
     public function __invoke(Request $request, string $userName): View
     {
         $user = User::where('user_name',$userName)->firstOrFail();
-       if(Auth::id() === $user->id){
-           return view('user.edit')->with([
-               'userName' => $user->user_name,
-               'displayName' => $user->display_name,
-               'profile' => $user->profile
-           ]);
-       }else{
-           abort(403);
-       }
+        if(Auth::user()->cannot('update',$user)) abort(403);
+        return view('user.edit')->with([
+            'userName' => $user->user_name,
+            'displayName' => $user->display_name,
+            'profile' => $user->profile
+       ]);
     }
 }
