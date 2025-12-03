@@ -4,11 +4,8 @@ namespace App\Http\Controllers\Xweet;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use App\Models\Xweet;
 use Illuminate\View\View;
 use Illuminate\Support\Facades\Auth;
-use App\Models\User;
-use App\Models\Follows;
 use App\Services\XweetService;
 use App\Services\UserService;
 
