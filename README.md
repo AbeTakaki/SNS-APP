@@ -50,3 +50,10 @@ update users set profile_image_id=1 where id=1;
 
 update images set path='profile_icon.jpeg' where id=1;
 ```
+
+# テスト環境の用意
+※ DB内にて
+```
+create database testing;
+grant all on testing.* to laraveluser;
+```
