@@ -99,4 +99,8 @@ php artisan test tests/Feature/Xweet/XweetDeleteTest.php
 # Follow 関連
 php artisan test tests/Feature/Follow/FollowStateTest.php
 php artisan test tests/Feature/FollowAction/FollowActionTest.php
+# Profile 関連
+php artisan test tests/Feature/Profile/EditProfileTest.php
+# Chat 関連
+php artisan test tests/Feature/Chat/ChatTest.php
 ```
