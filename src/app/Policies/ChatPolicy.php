@@ -38,7 +38,7 @@ class ChatPolicy
     
     public function enter(User $user, Chat $chat): bool
     {
-        if($chat->user_id === $user->id || $chat->user2_id === $user->id){
+        if($chat->user1_id === $user->id || $chat->user2_id === $user->id){
             return true;
         } else {
             return false;

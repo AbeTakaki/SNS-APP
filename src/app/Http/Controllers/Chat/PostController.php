@@ -7,6 +7,8 @@ use Illuminate\Support\Facades\Auth;
 use App\Http\Requests\Message\CreateRequest;
 use App\Models\Message;
 use App\Models\Chat;
+use App\Services\ChatService;
+use App\Services\MessageService;
 use Illuminate\Http\RedirectResponse;
 
 class PostController extends Controller
@@ -14,16 +16,17 @@ class PostController extends Controller
     /**
      * Handle the incoming request.
      */
-    public function __invoke(CreateRequest $request): RedirectResponse
+    public function __invoke(
+        CreateRequest $request,
+        int $chatId,
+        ChatService $chatService,
+        MessageService $messageService,
+    ): RedirectResponse
     {
-        $chatId=$request->getChatId();
-        $chat=Chat::where('id',$chatId)->firstOrFail();
+        $chatId = $request->getChatId();
+        $chat = $chatService->getChatById($chatId);
         if(Auth::user()->cannot('enter', $chat)) abort(403);
-        $message = new Message;
-        $message->chat_id=$chatId;
-        $message->mentioned_user_id=Auth::id();
-        $message->content=$request->getMessage();
-        $message->save();
+        $messageService->createMessage($chatId,Auth::id(),$request->getMessage());
         return redirect()->route('chat.index',['chatId'=>$chatId]);
     }
 }
