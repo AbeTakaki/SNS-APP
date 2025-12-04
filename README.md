@@ -57,3 +57,32 @@ update images set path='profile_icon.jpeg' where id=1;
 create database testing;
 grant all on testing.* to laraveluser;
 ```
+## .env.testingを作成  
+- .env.exampleをコピーして作成
+- .env.testingのDB周りの設定をテスト用に作成したDBに変更する
+
+```mysql
+# DB_CONNECTION=sqlite
+# DB_HOST=127.0.0.1
+# DB_PORT=3306
+# DB_DATABASE=laravel
+# DB_USERNAME=root
+# DB_PASSWORD=
+
+DB_CONNECTION=mysql
+DB_HOST=db
+DB_PORT=3306
+DB_DATABASE=testing
+DB_USERNAME=testluser
+DB_PASSWORD=testpassword
+```
+
+- アプリケーションキーの作成  
+```
+php artisan key:generate --env=testing
+```
+
+- testing データベースへのマイグレーションの実行
+```
+php artisan migrate --env=testing
+```
