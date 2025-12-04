@@ -96,4 +96,7 @@ php artisan test tests/Feature/Auth/RegistrationTest.php
 php artisan test tests/Feature/Xweet/XweetCreateTest.php
 php artisan test tests/Feature/Xweet/XweetUpdateTest.php
 php artisan test tests/Feature/Xweet/XweetDeleteTest.php
+# Follow 関連
+php artisan test tests/Feature/Follow/FollowStateTest.php
+php artisan test tests/Feature/FollowAction/FollowActionTest.php
 ```
