@@ -8,6 +8,8 @@ use App\Http\Requests\User\EditRequest;
 use App\Models\User;
 use Illuminate\Http\RedirectResponse;
 use App\Models\Image;
+use App\Services\ImageService;
+use App\Services\UserService;
 use Illuminate\Support\Facades\Storage;
 
 class EditPutController extends Controller
@@ -15,34 +17,31 @@ class EditPutController extends Controller
     /**
      * Handle the incoming request.
      */
-    public function __invoke(EditRequest $request, string $userName): RedirectResponse
+    public function __invoke(
+        EditRequest $request,
+        string $userName,
+        UserService $userService,
+        ImageService $imageService,
+    ): RedirectResponse
     {
-        $user = User::where('user_name',$userName)->firstOrFail();
+        $user = $userService->getUserByUserName($userName);
         if(Auth::user()->cannot('update', $user)) abort(403);
             
-        $user->display_name = $request->getInput1();
-        $user->profile = $request->getInput2();
+        $userService->setDisplayName($user->id, $request->getInput1());
+        $userService->setProfile($user->id, $request->getInput2());
             
         if($request->getInput3()){
-            $str=Storage::disk('public')->putFile('',$request->getInput3());
-
-            $image=new Image;
-            $image->path=$str;
-            $image->save();
+            $newImageId=$imageService->createImage($request->getInput3());
 
             if($user->profile_image_id){
-                $oldImage=Image::where('id',$user->profile_image_id)->first();
-                $user->profile_image_id=$image->id;
-                $user->save();
-                Storage::disk('public')->delete($oldImage->path);
-                $oldImage->delete();
+                $oldImageId = $user->profile_image_id;
+                $userService->setProfileImageId($user->id,$newImageId);
+                $imageService->deleteImage($oldImageId);
             }else{
-                $user->profile_image_id=$image->id;
-                $user->save();
+                $userService->setProfileImageId($user->id, $newImageId);
             }
-        }else{
-            $user->save();
         }
+        
         return redirect()->route('user.index',['userName'=>$userName]);
     }
 }

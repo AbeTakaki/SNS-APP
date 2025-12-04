@@ -51,4 +51,25 @@ class UserService {
         $users=User::whereIn('id',$userIds)->get();
         return $users;
     }
+
+    public function setDisplayName(int $id, string $displayName): void
+    {
+        $user = User::where('id',$id)->firstOrFail();
+        $user->display_name = $displayName;
+        $user->save();
+    }
+
+    public function setProfile(int $id, string|null $profile): void
+    {
+        $user = User::where('id',$id)->firstOrFail();
+        $user->profile = $profile;
+        $user->save();
+    }
+
+    public function setProfileImageId(int $id, int $profileImageId): void
+    {
+        $user = User::where('id',$id)->firstOrFail();
+        $user->profile_image_id = $profileImageId;
+        $user->save();
+    }
 }
