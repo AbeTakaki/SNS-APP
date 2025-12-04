@@ -89,8 +89,11 @@ php artisan migrate --env=testing
 
 ## テスト時のコマンド
 ```
+# 認証系
 php artisan test tests/Feature/Auth/AuthenticationTest.php
 php artisan test tests/Feature/Auth/RegistrationTest.php
+# Xweet 関連
 php artisan test tests/Feature/Xweet/XweetCreateTest.php
-php artisan test tests/Feature/Xweet/XweetUpdateTest.php 
+php artisan test tests/Feature/Xweet/XweetUpdateTest.php
+php artisan test tests/Feature/Xweet/XweetDeleteTest.php
 ```
