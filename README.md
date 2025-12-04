@@ -86,3 +86,11 @@ php artisan key:generate --env=testing
 ```
 php artisan migrate --env=testing
 ```
+
+## テスト時のコマンド
+```
+php artisan test tests/Feature/Auth/AuthenticationTest.php
+php artisan test tests/Feature/Auth/RegistrationTest.php
+php artisan test tests/Feature/Xweet/XweetCreateTest.php
+php artisan test tests/Feature/Xweet/XweetUpdateTest.php 
+```
