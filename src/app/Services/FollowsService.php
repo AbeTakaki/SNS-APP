@@ -44,4 +44,42 @@ class FollowsService {
             ['followed_user_id', $userId2],
         ])->exists();
     }
+
+    /**
+     * ユーザー1 がユーザー2 をフォローする。
+     *
+     * 既にフォロー関係が存在しない場合のみ、新規フォローレコードを作成
+     * 重複フォローを防ぐため、isFollow() で事前チェックを行う。
+     *
+     * @param  int  $followerId   フォローする側のユーザーID
+     * @param  int  $followedId   フォロー対象のユーザーID
+     * @return void
+     */
+    public function createFollow(int $userId1, int $userId2):void{
+        if(!$this->isFollow($userId1,$userId2)){
+            $follows=new Follows;
+            $follows->following_user_id=$userId1;
+            $follows->followed_user_id=$userId2;
+            $follows->save();
+        }
+    }
+
+    /**
+     * ユーザー1 がユーザー2 へのフォローを解除する。
+     *
+     * 指定したフォロー関係を削除します。
+     * フォロー関係が存在しない場合は ModelNotFoundException を投げます。
+     *
+     * @param  int  $followerId   フォローを解除する側のユーザーID
+     * @param  int  $followedId   フォロー対象のユーザーID
+     * @return void
+     *
+     * @throws \Illuminate\Database\Eloquent\ModelNotFoundException フォロー関係が存在しない場合
+     */
+    public function deleteFollow(int $userId1, int $userId2):void{
+        Follows::where([
+            ['following_user_id',$userId1],
+            ['followed_user_id',$userId2],
+        ])->firstOrFail()->delete();
+    }
 }

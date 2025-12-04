@@ -4,8 +4,6 @@ namespace App\Http\Controllers\User;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use App\Models\Follows;
-use App\Models\User;
 use App\Services\UserService;
 use Illuminate\View\View;
 
