@@ -6,19 +6,19 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Models\Xweet;
+use App\Services\XweetService;
 
 class DeleteController extends Controller
 {
     /**
      * Handle the incoming request.
      */
-    public function __invoke(Request $request)
+    public function __invoke(Request $request, XweetService $xweetService)
     {
-        $userId = Auth::id();
         $xweetId = (int)$request->route('xweetId');
-        $xweet = Xweet::where('id', $xweetId)->firstOrFail();
+        $xweet = $xweetService->getXweetById($xweetId);
         if(Auth::user()->cannot('delete', $xweet)) abort(403);
-        $xweet->delete();
+        $xweetService->deleteXweet($xweetId);
         return redirect()->route('xweet.index');
     }
 }

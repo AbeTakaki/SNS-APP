@@ -6,9 +6,9 @@ use Illuminate\View\View;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use App\Models\User;
-use App\Models\Xweet;
-use App\Models\Follows;
+use App\Services\FollowsService;
+use App\Services\UserService;
+use App\Services\XweetService;
 
 /**
  * Class UserController
@@ -20,19 +20,23 @@ class UserController extends Controller
     /**
      * Handle the incoming request.
      */
-    public function __invoke(Request $request, string $userName) : View
+    public function __invoke(
+        Request $request,
+        string $userName,
+        UserService $userService,
+        XweetService $xweetService,
+        FollowsService $followsService
+    ) : View
     {
-        $user = User::where('user_name', $userName)->firstOrFail();
-        $xweets = Xweet::where('user_id', $user->id)->orderBy('created_at','DESC')->get();
-        $following = Auth::id();
-        $follower = $user->id;
-        $follows = Follows::where([
-            ['following_user_id', $following],
-            ['followed_user_id', $follower],
-        ])->first();
-
+        $user = $userService->getUserByUserName($userName);
+        $xweets = $xweetService->getUserXweets($user->id);
+        
         $isFollowing = false;
-        if($follows) $isFollowing = true;
+        $following = Auth::id();
+        if ($following){
+            $follower = $user->id;
+            $isFollowing = $followsService->isFollow($following, $follower);
+        }
 
         $imagePath = null;
         if($user->profile_image_id) {
