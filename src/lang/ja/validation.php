@@ -19,7 +19,7 @@ return[
 
     'attributes'=>[
       'message'=>'メッセージ',  
-      'quoot'=>'つぶやき',
+      'xweet'=>'つぶやき',
       'input1'=>'表示名',
       'input2'=>'自己紹介',
       'input3'=>'プロフィール画像',
