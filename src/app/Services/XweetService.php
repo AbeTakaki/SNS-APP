@@ -41,7 +41,7 @@ class XweetService {
 
     public function getAllXweets(): Collection
     {
-        $xweets = Xweet::orderBy('created_at', 'DESC')->get();
+        $xweets = Xweet::with('user.image')->orderBy('created_at', 'DESC')->get();
           return $xweets;
     }
 
@@ -56,14 +56,14 @@ class XweetService {
             $followUserIds[] = $user->followed_user_id;
         }
 
-        $xweets = Xweet::whereIn('user_id', $followUserIds)->orderBy('created_at', 'DESC')->get();
+        $xweets = Xweet::with('user.image')->whereIn('user_id', $followUserIds)->orderBy('created_at', 'DESC')->get();
 
         return $xweets;
     }
 
     public function getUserXweets(int $userId): Collection
     {
-        $xweets = Xweet::where('user_id', $userId)->orderBy('created_at', 'DESC')->get();
+        $xweets = Xweet::with('user.image')->where('user_id', $userId)->orderBy('created_at', 'DESC')->get();
         return $xweets;
     }
 }

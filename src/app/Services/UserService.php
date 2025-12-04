@@ -37,7 +37,7 @@ class UserService {
             );
         }
 
-        $users = User::whereIn('id', $userIds)->get();
+        $users = User::with('image')->whereIn('id', $userIds)->get();
         return $users;
     }
 
@@ -48,7 +48,7 @@ class UserService {
             array_push($userIds,$follow->following_user_id);
         }
 
-        $users=User::whereIn('id',$userIds)->get();
+        $users=User::with('image')->whereIn('id',$userIds)->get();
         return $users;
     }
 
