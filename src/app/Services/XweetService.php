@@ -60,4 +60,10 @@ class XweetService {
 
         return $xweets;
     }
+
+    public function getUserXweets(int $userId): Collection
+    {
+        $xweets = Xweet::where('user_id', $userId)->orderBy('created_at', 'DESC')->get();
+        return $xweets;
+    }
 }
