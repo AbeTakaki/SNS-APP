@@ -1,0 +1,30 @@
+# Security Group for External
+
+resource "aws_security_group" "web" {
+  vpc_id = aws_vpc.this.id
+  tags = {
+    Name="${local.app_name}-web"
+  }
+}
+
+resource "aws_vpc_security_group_ingress_rule" "web_ingress_rule_http" {
+  security_group_id = aws_security_group.web.id
+  from_port = 80
+  to_port = 80
+  ip_protocol = "tcp"
+  cidr_ipv4 = "0.0.0.0/0"
+}
+
+resource "aws_vpc_security_group_ingress_rule" "web_ingress_rule_https" {
+  security_group_id = aws_security_group.web.id
+  from_port = 443
+  to_port = 443
+  ip_protocol = "tcp"
+  cidr_ipv4 = "0.0.0.0/0"
+}
+
+resource "aws_vpc_security_group_egress_rule" "web_egress_rule" {
+  security_group_id = aws_security_group.web.id
+  ip_protocol = "-1"
+  cidr_ipv4 = "0.0.0.0/0"
+}
