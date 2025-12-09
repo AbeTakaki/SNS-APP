@@ -52,6 +52,7 @@ resource "aws_ecs_task_definition" "this" {
   cpu = 256
   memory = 512
   execution_role_arn = aws_iam_role.ecs_task_execution_role.arn
+  task_role_arn = aws_iam_role.ecs_task_role.arn
   container_definitions = jsonencode([
     {
       name="web"
@@ -84,10 +85,34 @@ resource "aws_ecs_task_definition" "this" {
           awslogs-stream-prefix:"ecs"
         }
       }
-      secrets=[{
-        name="APP_KEY"
-        valueFrom="/${local.app_name}/APP_KEY"
-      }]
+      secrets=[
+        {
+          name="APP_KEY"
+          valueFrom="/${local.app_name}/APP_KEY"
+        },
+        {
+          name="DB_NAME"
+          valueFrom="/${local.app_name}/DB_NAME"
+        },
+        {
+          name="DB_USERNAME"
+          valueFrom="/${local.app_name}/DB_USERNAME"
+        },
+        {
+          name="DB_PASSWORD"
+          valueFrom="/${local.app_name}/DB_PASSWORD"
+        },
+        {
+          name="DB_HOST"
+          valueFrom="/${local.app_name}/DB_HOST"
+        }
+      ]
+      environmentFiles=[
+       {
+         value="arn:aws:s3:::${local.identifier}-${local.app_name}-env-file/php/.prod.env"
+         type="s3"
+       }
+     ]
     }
   ])
 }
@@ -101,6 +126,7 @@ resource "aws_ecs_service" "this" {
   desired_count = 2
   deployment_minimum_healthy_percent = 100
   deployment_maximum_percent = 200
+  enable_execute_command = true
   load_balancer {
     container_name = "web"
     container_port = 80
@@ -148,4 +174,48 @@ resource "aws_iam_policy" "ssm" {
 resource "aws_iam_role_policy_attachment" "ecs_task_execution_ssm" {
   role = aws_iam_role.ecs_task_execution_role.name
   policy_arn = aws_iam_policy.ssm.arn
+}
+
+# ECS Task Role
+
+resource "aws_iam_role" "ecs_task_role" {
+  name = "${local.app_name}-ecs-task-role"
+  assume_role_policy = jsonencode({
+    "Version":"2012-10-17"
+    "Statement":[
+      {
+        "Effect":"Allow"
+        "Principal":{
+          "Service":"ecs-tasks.amazonaws.com"
+        }
+        "Action":"sts:AssumeRole"
+      }
+    ]
+  })
+}
+
+# Policy for using ECS Exec
+
+resource "aws_iam_policy" "ssm_messages" {
+  name = "${local.app_name}-ssm-messages"
+  policy = jsonencode({
+    "Version":"2012-10-17"
+    "Statement":[
+      {
+        "Effect":"Allow"
+        "Action":[
+          "ssmmessages:CreateControlChannel",
+          "ssmmessages:CreateDataChannel",
+          "ssmmessages:OpenControlChannel",
+          "ssmmessages:OpenDataChannel",
+        ]
+        "Resource": "*"
+      }
+    ]
+  })
+}
+
+resource "aws_iam_role_policy_attachment" "ecs_task_ssm_messages" {
+  role = aws_iam_role.ecs_task_role.name
+  policy_arn = aws_iam_policy.ssm_messages.arn
 }
