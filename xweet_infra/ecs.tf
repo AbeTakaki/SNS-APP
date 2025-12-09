@@ -105,7 +105,11 @@ resource "aws_ecs_task_definition" "this" {
         {
           name="DB_HOST"
           valueFrom="/${local.app_name}/DB_HOST"
-        }
+        },
+        {
+          name="AWS_BUCKET"
+          valueFrom="/${local.app_name}/AWS_BUCKET"
+        },
       ]
       environmentFiles=[
        {
