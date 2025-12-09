@@ -15,7 +15,7 @@
                     
                 @else
                     @env('production')
-                        <img src="https://xweet-laravel-abetaka-xweet-static-files.s3.ap-northeast-1.amazonaws.com/default_profile_icon.png" alt="profile image" width="120" height="120" class="object-contain">
+                        <img src="https://xweet-laravel-abetaka-xweet-static-file.s3.ap-northeast-1.amazonaws.com/default_profile_icon.png" alt="profile image" width="120" height="120" class="object-contain">
                     @endenv
                     @env('local')
                         <img src="{{ asset('storage/app/public/default_profile_icon.png') }}" alt="profile image" width="120" height="120" class="object-contain">

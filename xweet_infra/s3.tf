@@ -36,7 +36,7 @@ resource "aws_iam_role_policy_attachment" "ecs_task_execution_s3_env_file" {
 # Static file Bucket and Policy
 
 resource "aws_s3_bucket" "static_file" {
-  bucket = "${local.identifier}-${local.app_name}-static-files"
+  bucket = "${local.identifier}-${local.app_name}-static-file"
 }
 
 resource "aws_s3_bucket_public_access_block" "s3_static_file" {
@@ -48,7 +48,7 @@ resource "aws_s3_bucket_public_access_block" "s3_static_file" {
 }
 
 resource "aws_iam_policy" "s3_static_file" {
-  name = "${local.app_name}-static-files"
+  name = "${local.app_name}-static-file"
   policy = jsonencode(
     {
       "Version":"2012-10-17"
