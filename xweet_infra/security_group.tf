@@ -28,3 +28,24 @@ resource "aws_vpc_security_group_egress_rule" "web_egress_rule" {
   ip_protocol = "-1"
   cidr_ipv4 = "0.0.0.0/0"
 }
+
+# Security Group for Internal
+
+resource "aws_security_group" "vpc" {
+  vpc_id = aws_vpc.this.id
+  tags = {
+    Name="${local.app_name}-vpc"
+  }
+}
+
+resource "aws_vpc_security_group_ingress_rule" "vpc_ingress_rule" {
+  security_group_id = aws_security_group.vpc.id
+  ip_protocol = "-1"
+  cidr_ipv4 = "0.0.0.0/0"
+}
+
+resource "aws_vpc_security_group_egress_rule" "vpc_egress_rule" {
+  security_group_id = aws_security_group.vpc.id
+  ip_protocol = "-1"
+  cidr_ipv4 = "0.0.0.0/0"
+}

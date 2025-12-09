@@ -35,11 +35,18 @@ resource "aws_lb_listener" "https" {
   protocol = "HTTPS"
   certificate_arn = aws_acm_certificate.root.arn
   default_action {
-    type = "fixed-response"
-    fixed_response {
-      content_type = "text/plain"
-      message_body = "503 Service Temporarily Unavailable"
-      status_code = "503"
-    }
+    type = "forward"
+    target_group_arn = aws_lb_target_group.ecs.arn
   }
+}
+
+# ALB Target Group
+
+resource "aws_lb_target_group" "ecs" {
+  name = "${local.app_name}-ecs"
+  vpc_id = aws_vpc.this.id
+  target_type = "ip"
+  port = 80
+  protocol = "HTTP"
+  deregistration_delay = 60
 }
