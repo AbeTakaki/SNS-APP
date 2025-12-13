@@ -137,7 +137,13 @@ test('プロフィール編集 画像アップロード', function(){
     $response->assertRedirect('/user/'.$this->user->user_name);
 
     $user=User::where(['user_name'=>'Arnold',])->first();
-    Storage::disk('public')->delete($user->getImagePath());
+    if($this->app->environment(['production','ci'])){
+        $path=$user->getImagePath();
+        $div=preg_split("/\//",$path);
+        Storage::disk('s3')->delete(end($div));
+    }else{
+        Storage::disk('public')->delete($user->getImagePath());
+    }
     
 });
 
@@ -162,8 +168,16 @@ test('プロフィール編集 画像アップロード DB,Storage確認', funct
     ])->assertValid();
 
     $user=User::where(['user_name'=>'Arnold',])->first();
-    Storage::disk('public')->assertExists($user->getImagePath());
-    Storage::disk('public')->delete($user->getImagePath());
+
+    if($this->app->environment(['production','ci'])){
+        $path=$user->getImagePath();
+        $div=preg_split("/\//",$path);
+        Storage::disk('s3')->assertExists(end($div));
+        Storage::disk('s3')->delete(end($div));
+    }else{
+        Storage::disk('public')->assertExists($user->getImagePath());
+        Storage::disk('public')->delete($user->getImagePath());
+   }
     
 });
 
