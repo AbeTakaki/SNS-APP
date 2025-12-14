@@ -4,6 +4,9 @@ services:
     build: 
       dockerfile: ./infra/next/Dockerfile
       context: .
+    environment:
+      - CHOKIDAR_USEPOLLING=true
+      - WATCHPACK_POLLING=true
     volumes:
       - ./next:/next
     networks:
