@@ -1,0 +1,76 @@
+{
+  "family": "xweet",
+  "runtimePlatform": {"operatingSystemFamily": "LINUX"},
+  "taskRoleArn": "arn:aws:iam::AWS_ACCOUNT_ID:role/xweet-ecs-task-role",
+  "executionRoleArn": "arn:aws:iam::AWS_ACCOUNT_ID:role/xweet-ecs-task-execution-role",
+  "networkMode": "awsvpc",
+  "requiresCompatibilities": ["FARGATE"],
+  "cpu": "256",
+  "memory": "512",
+  "containerDefinitions": [
+    {
+      "name":"web",
+      "image":"",
+      "portMappings":[{
+          "containerPort":80,
+          "protocol":"tcp"
+      }],
+      "dependsOn":[{
+          "containerName":"php",
+          "condition":"START"
+      }],
+      "logConfiguration":{
+          "logDriver":"awslogs",
+          "options":{
+              "awslogs-region":"ap-northeast-1",
+              "awslogs-group":"/ecs/xweet/web",
+              "awslogs-stream-prefix":"ecs"
+          }
+      }
+    },
+    {
+      "name":"php",
+      "image":"",
+      "logConfiguration":{
+          "logDriver":"awslogs",
+          "options":{
+              "awslogs-region":"ap-northeast-1",
+              "awslogs-group":"/ecs/xweet/php",
+              "awslogs-stream-prefix":"ecs"
+          }
+      },
+      "secrets":[
+        {
+          "name":"APP_KEY",
+          "valueFrom":"/xweet/APP_KEY"
+        },
+        {
+          "name":"DB_NAME",
+          "valueFrom":"/xweet/DB_NAME"
+        },
+        {
+          "name":"DB_USERNAME",
+          "valueFrom":"/xweet/DB_USERNAME"
+        },
+        {
+          "name":"DB_PASSWORD",
+          "valueFrom":"/xweet/DB_PASSWORD"
+        },
+        {
+          "name":"DB_HOST",
+          "valueFrom":"/xweet/DB_HOST"
+        },
+        {
+          "name":"AWS_BUCKET",
+          "valueFrom":"/xweet/AWS_BUCKET"
+        }
+      ],
+      "environmentFiles":[
+        {
+          "value":"arn:aws:s3:::xweet-laravel-abetaka-xweet-env-file/php/.prod.env",
+          "type":"s3"
+        }
+      ]
+    }
+  ]
+}
