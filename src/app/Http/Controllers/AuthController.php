@@ -10,6 +10,8 @@ use Laravel\Sanctum\PersonalAccessToken;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
 
+use function Symfony\Component\Clock\now;
+
 class AuthController extends Controller
 {
     public function login(Request $request): JsonResponse
@@ -47,5 +49,23 @@ class AuthController extends Controller
     {
         PersonalAccessToken::findToken($request->bearerToken())->delete();
         return response()->json(['message' => 'ログアウトしました。'], Response::HTTP_CREATED);
+    }
+
+    public function register(Request $request): JsonResponse
+    {
+        $user = User::create([
+            'user_name' => $request->name,
+            'display_name' => $request->name,
+            'email' => $request->email,
+            'password' => Hash::make($request->password),
+            'created_at' => now(),
+            'updated_at' => now(),
+        ]);
+
+        if($user){
+            return response()->json(['user' => $user], Response::HTTP_CREATED);
+        }else {
+            return response()->json(['error' => 'ユーザー登録に失敗しました。'], Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
     }
 }

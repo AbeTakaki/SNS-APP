@@ -1,7 +1,7 @@
 "use server";
 
 import axios from "axios";
-import { cookies } from 'next/headers'
+import { cookies, headers } from 'next/headers'
 
 export const login = async (data:FormData) =>{
   try{
@@ -66,5 +66,26 @@ export const logout = async () =>{
   }catch(e){
     console.log(e);
     throw new Error("ログアウトに失敗しました");
+  }
+}
+
+export const register = async (data:FormData) => {
+  try {
+    await axios.post(`${process.env.API_BASE_URL}/api/register`,
+      {
+        name: data.get("user_name"),
+        email: data.get("email"),
+        password: data.get("password"),
+      },
+      {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    );
+    await login(data);
+  } catch (e) {
+    console.log(e);
+    throw new Error("ユーザー新規登録に失敗しました。");
   }
 }
