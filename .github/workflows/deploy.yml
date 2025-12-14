@@ -5,7 +5,6 @@ on:
     branches:
     - test
 
-
 env:
   AWS_REGION: ap-northeast-1
   APP_NAME: xweet
