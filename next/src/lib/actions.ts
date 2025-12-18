@@ -117,8 +117,11 @@ export const createXweet = async (data:FormData) => {
         },
       }
     )
-  } catch (e:any) {
-    return e.response.data.message;
+  } catch (e) {
+    if (axios.isAxiosError(e)){
+      return e.response?.data.message;
+    }
+    throw new Error("予期せぬエラーが発生しました。");
   }
 }
 
@@ -157,8 +160,11 @@ export const updateXweet = async (data:FormData, xweetId:number) => {
         },
       }
     )
-  } catch (e:any) {
-    return e.response.data.message;
+  } catch (e) {
+    if (axios.isAxiosError(e)){
+      return e.response?.data.message;
+    }
+    throw new Error("予期せぬエラーが発生しました。");
   }
 }
 
@@ -306,8 +312,11 @@ export const createMessage = async (data:FormData, chatId:number) =>{
         },
       }
     )
-  }catch(error:any){
-    return error.response.data.message;
+  } catch (e) {
+    if (axios.isAxiosError(e)){
+      return e.response?.data.message;
+    }
+    throw new Error("予期せぬエラーが発生しました。");
   }
 }
 
@@ -372,7 +381,10 @@ export const editProfile = async (data:FormData, userName:string) =>{
         },
       }
     )
-  }catch(e:any){
-    return e.response.data.message;
+  } catch (e) {
+    if (axios.isAxiosError(e)){
+      return e.response?.data.message;
+    }
+    throw new Error("予期せぬエラーが発生しました。");
   }
 }
