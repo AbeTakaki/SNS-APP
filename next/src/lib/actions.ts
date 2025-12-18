@@ -220,3 +220,15 @@ export const getFollowers = async (userName:string) =>{
     throw new Error("フォロワー取得に失敗しました");
   }
 }
+
+export const getUserPage = async (userName:string,loginId?:number|null) =>{
+  try{
+    let res;
+    if(!loginId) res = await axios.get(`${process.env.API_BASE_URL}/api/user/${userName}`);
+    else res = await axios.get(`${process.env.API_BASE_URL}/api/user/${userName}?id=${loginId}`)
+    return res.data;
+  }catch(e){
+    console.log(e);
+    throw new Error("ユーザ情報取得に失敗しました");
+  }
+}
