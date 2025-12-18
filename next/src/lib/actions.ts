@@ -101,3 +101,23 @@ export const getXweet = async (userId?:number|null) => {
     throw new Error("Xweetの取得に失敗しました。");
   }
 }
+
+export const createXweet = async (data:FormData) => {
+  try {
+    const cookieStore = await cookies();
+    const token:string|undefined = cookieStore.get("token")?.value;
+    await axios.post(`${process.env.API_BASE_URL}/api/xweet/create`,
+      {
+        xweet: data.get("xweet"),
+      },
+      {
+        headers:{
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${token}`,
+        },
+      }
+    )
+  } catch (e:any) {
+    return e.response.data.message;
+  }
+}
