@@ -270,3 +270,43 @@ export const deleteFollow = async (userName:string) =>{
     throw new Error("フォロー解除に失敗しました");
   }
 }
+
+export const getMessages = async (chatId:number) =>{
+  try{
+    const cookieStore = await cookies();
+    const token:string|undefined = cookieStore.get("token")?.value;
+    const res = await axios.get(`${process.env.API_BASE_URL}/api/chat/${chatId}`,
+      {
+        headers:{
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${token}`
+        },
+        data:{}
+      }
+    );
+    return res.data;
+  }catch(e){
+    console.log(e);
+    throw new Error("メッセージ取得に失敗しました");
+  }
+}
+
+export const createMessage = async (data:FormData, chatId:number) =>{
+  try{
+    const cookieStore = await cookies();
+    const token:string|undefined = cookieStore.get("token")?.value;
+    await axios.post(`${process.env.API_BASE_URL}/api/chat/${chatId}`,
+      {
+        message: data.get("message"),
+      },
+      {
+        headers:{
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${token}`
+        },
+      }
+    )
+  }catch(error:any){
+    return error.response.data.message;
+  }
+}
