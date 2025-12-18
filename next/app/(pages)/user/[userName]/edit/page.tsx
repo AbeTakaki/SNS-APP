@@ -1,80 +1,27 @@
-"use client";
-
-import { canEditProfile, editProfile } from "@/src/lib/actions";
-import { user } from "@/src/types/types";
-import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import Auth from "@/src/components/auth";
+import EditForm from "@/src/components/user/editform";
+import { canEditProfile } from "@/src/lib/actions";
+import { redirect } from "next/navigation";
 
 type Props={
   params:Promise<{userName:string}>;
 };
 
-export default function Page({params}:Props) {
-  const router = useRouter();
-  const [error,setError] = useState<string|null>(null);
-  const [data,setData] = useState<user>();
-
-  useEffect(()=>{
-    const tryCanEditProfile = async() =>{
-      try{
-        const res = await canEditProfile((await params).userName);
-        setData(res);
-      }catch(e){
-        setError((e as Error).message);
-        router.push("/error/403");
-      }
-    }
-    tryCanEditProfile();
-  },[])
-  
-  const tryEditProfile = async(data:FormData) =>{
-    try{
-      const res = await editProfile(data,(await params).userName);
-      if(res){
-        setError(res);
-      }else{
-        router.push(`/user/${(await params).userName}`);
-      }
-    }catch(e){
-      setError((e as Error).message);
-    }
+export default async function Page({params}:Props) {
+  let data;
+  try{
+    const res = await canEditProfile((await params).userName);
+    data = res;
+  }catch(e){
+    console.log((e as Error).message);
+    redirect("/error/403");
   }
 
   return(
     <>
-      {data?
-        <div>
-          <h1>Quotter</h1>
-          <h2>プロフィールを編集</h2>
-          <form action={tryEditProfile}>
-              <p>表示名</p>
-              <input 
-                  type="text" 
-                  name="input1" 
-                  id="input1" 
-                  className="block mt-1 bg-gray-100 text-gray-700"
-                  placeholder="Enter your name" 
-                  defaultValue={data.display_name}
-              />
-
-              <p>自己紹介</p>
-              <textarea
-                  name="input2"
-                  id="input2"
-                  className="block mt-1 bg-gray-100 text-gray-700"
-                  placeholder="Enter your profile"
-                  defaultValue={data.profile}
-              ></textarea>
-
-              <p>プロフィール画像</p>
-              {/* ここに画像アップロード機能を実装予定 */}
-
-              {error && <p className="text-red-500">{error}</p>}
-
-              <button type="submit">変更を保存</button>
-          </form>
-        </div>
-      :''}
+      <Auth>
+        <EditForm userName={data.user_name} displayName={data.display_name} profile={data.profile} />
+      </Auth>
     </>
   )
 }
