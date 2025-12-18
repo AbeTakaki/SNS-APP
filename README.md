@@ -3,9 +3,9 @@ Laravel 12.39.0
 php-fpm 8.4.11  
 nginx 1.28  
 MySQL 8.0  
-Terraform 
+Terraform     
 AWS ECS Fargate  
-Next.js 16.0.10 (App Router)  
+Next.js 16.0.10  
 
 # 要件定義
 * 新規会員登録、ログイン、ログアウト
