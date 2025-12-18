@@ -1,9 +1,11 @@
+import { redirect } from "next/navigation";
 import React from "react";
 import Link from "next/link";
-import { createFollow,deleteFollow,deleteXweet, getUserData,getUserPage, moveChatRoom } from "@/src/lib/actions";
-import { redirect } from "next/navigation";
 import { revalidatePath } from "next/cache";
-import { xweet } from "@/src/types/types";
+import { createFollow, deleteFollow, getUserData, getUserPage, moveChatRoom } from "@/src/lib/actions";
+import ButtonPost from "@/src/components/element/buttonpost";
+import LinkGet from "@/src/components/element/linkget";
+import XweetList from "@/src/components/xweet/xweetlist";
 
 type Props={
   params:Promise<{userName:string}>;
@@ -13,12 +15,12 @@ let data;
 export default async function Page({params}:Props) {
   let loginUserId:number=0;
   try{
-    const res = await getUserData();
-    loginUserId = res?.id;
+    const res2 = await getUserData();
+    loginUserId = res2?.id;
   }catch(e){
     console.log((e as Error).message);
   }
-
+  
   try{
     const res = await getUserPage((await params).userName,loginUserId);
     data = res;
@@ -27,7 +29,7 @@ export default async function Page({params}:Props) {
     redirect("/error/403");
   }
 
-    const tryCreateFollow = async() =>{
+  const tryCreateFollow = async() =>{
     "use server";
     try{
       await createFollow((await params).userName);
@@ -52,6 +54,7 @@ export default async function Page({params}:Props) {
     }
     revalidatePath(`/user/${(await params).userName}`);
   }
+
   const tryMoveChatRoom = async() =>{
     "use server";
     let chatId;
@@ -67,36 +70,30 @@ export default async function Page({params}:Props) {
 
   return(
     <>
-      <p>ユーザ{data.displayName}のページ</p>
-      <p>{data.profile}</p>
-      {(loginUserId && loginUserId!==data.id && !data.isFollowing)?<form action={tryCreateFollow}><button type="submit">フォローする</button></form>:''}
-      {(loginUserId && loginUserId!==data.id && data.isFollowing)?<form action={tryDeleteFollow}><button type="submit">フォロー解除</button></form>:''}
-      {(loginUserId && loginUserId!==data.id)?<form action={tryMoveChatRoom}><button type="submit">チャットを開始</button></form>:''}
-      {(loginUserId && loginUserId===data.id)?<Link href={`/user/${data.userName}/edit`}>プロフィール編集画面へ</Link>:''}
-      <div>
-        {data.xweets?.map((xweet:xweet)=>(
-          <React.Fragment key={xweet.id}>
-            {xweet.content} by {xweet.user?.display_name} posted on {xweet.created_at}
-            {(loginUserId && loginUserId===xweet.user?.id)?<Link href={`/xweet/update/${xweet.id}`}> 更新</Link>:''}
-            {(loginUserId && loginUserId===xweet.user?.id)?
-              <form action={
-                async()=>{
-                  "use server";
-                  try{
-                    await deleteXweet(xweet.id);
-                  }catch(e){
-                    console.log((e as Error).message);
-                  }
-                  redirect("/xweet"); 
-                }
-              }>
-                <button type="submit"> 削除</button>
-              </form>:''
-            }
-            <br></br>
-          </React.Fragment>
-        ))}
+      <div className="h-8"></div>
+      <div className="flex justify-between">
+        <div className="flex">
+          <div className="ml-8">
+            <h2 id="displayname" className="text-3xl font-bold mb-4">{data.displayName}</h2>
+            <p id="profile">{data.profile}</p>
+          </div>
+        </div>
+        <div>
+          <ul className="flex space-x-4">
+            <li><Link href={`/user/${data.userName}/follows`} className="text-center text-gray-500 hover:text-black">Follows</Link></li>
+            <li><Link href={`/user/${data.userName}/followers`} className="text-center text-gray-500 hover:text-black">Followers</Link></li>
+          </ul>
+        </div>
       </div>
+
+      <div className="flex flex-wrap justify-center">
+        {(loginUserId && loginUserId!==data.id && !data.isFollowing)?<form action={tryCreateFollow}><ButtonPost id="create-follow" description="フォローする"/></form>:''}
+        {(loginUserId && loginUserId!==data.id && data.isFollowing)?<form action={tryDeleteFollow}><ButtonPost id="delete-follow" description="フォロー解除"/></form>:''}
+        {(loginUserId && loginUserId!==data.id)?<form action={tryMoveChatRoom}><ButtonPost id="start-chat" description="チャットを開始"/></form>:''}
+        {(loginUserId && loginUserId===data.id)?<LinkGet id="move-edit-profile-page" path={`/user/${data.userName}/edit`} description="プロフィール編集画面へ" />:''}
+      </div>
+
+      <XweetList loginUserId={loginUserId} xweets={data.xweets} />
     </>
   )
 }
