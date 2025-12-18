@@ -19,6 +19,12 @@ class UpdateController extends Controller
         $xweetId = (int)$request->route('xweetId');
         $xweet = $xweetService->getXweetById($xweetId)->resource;
         if(Auth::user()->cannot('update', $xweet)) abort(403);
-        return response()->json(['xweet'=>$xweet,],Response::HTTP_OK);
+        return response()->json([
+            'id' => $xweet->id,
+            'user_id' => $xweet->user_id,
+            'content' => $xweet->content,
+            'created_at' => $xweet->created_at,
+            'updated_at' => $xweet->updated_at,
+        ],Response::HTTP_OK);
     }
 }
