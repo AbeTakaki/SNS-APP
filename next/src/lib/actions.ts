@@ -161,3 +161,22 @@ export const updateXweet = async (data:FormData, xweetId:number) => {
     return e.response.data.message;
   }
 }
+
+export const deleteXweet = async (xweetId:number) => {
+  try {
+    const cookieStore = await cookies();
+    const token:string|undefined = cookieStore.get("token")?.value;
+    await axios.delete(`${process.env.API_BASE_URL}/api/xweet/delete/${xweetId}`,
+      {
+        headers:{
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${token}`,
+        },
+        data:{}
+      }
+    )
+  } catch (e) {
+    console.log(e);
+    throw new Error("Xweet削除に失敗しました。");
+  }
+}
