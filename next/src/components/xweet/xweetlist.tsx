@@ -1,8 +1,8 @@
-import { deleteXweet } from "../../actions";
+import { deleteXweet } from "../../lib/actions";
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import React from "react";
-import { xweet } from "../../../types/types"
+import { xweet } from "../../types/types"
 
 type Props = {
   loginUserId: number;

@@ -1,4 +1,4 @@
-import Header from "@/src/lib/components/navigation/header";
+import Header from "@/src/components/navigation/header";
 import { Suspense } from "react";
 
 export default function Layout({

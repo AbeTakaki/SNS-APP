@@ -1,4 +1,4 @@
-import { logout } from "../../actions";
+import { logout } from "../../lib/actions";
 import { redirect } from "next/navigation";
 
 export default function LogoutForm(){

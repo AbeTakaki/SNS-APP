@@ -1,4 +1,4 @@
-import { getUserData } from "../../actions";
+import { getUserData } from "../../lib/actions";
 import Link from "next/link";
 import LogoutForm from "../logput/logoutform";
 

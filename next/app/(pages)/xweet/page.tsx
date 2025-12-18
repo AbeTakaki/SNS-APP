@@ -1,5 +1,5 @@
 import React from "react";
-import XweetList from "@/src/lib/components/xweet/xweetlist";
+import XweetList from "@/src/components/xweet/xweetlist";
 import { getXweet,getUserData } from "@/src/lib/actions";
 
 export default async function Page() {
