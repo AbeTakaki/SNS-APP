@@ -232,3 +232,41 @@ export const getUserPage = async (userName:string,loginId?:number|null) =>{
     throw new Error("ユーザ情報取得に失敗しました");
   }
 }
+
+export const createFollow = async (userName:string) =>{
+  try{
+    const cookieStore = await cookies();
+    const token:string|undefined = cookieStore.get("token")?.value;
+    await axios.post(`${process.env.API_BASE_URL}/api/user/${userName}/follow`,
+      {},
+      {
+        headers:{
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${token}`
+        },
+      }
+    )
+  }catch(e){
+    console.log(e);
+    throw new Error("フォローに失敗しました");
+  }
+}
+
+export const deleteFollow = async (userName:string) =>{
+  try{
+    const cookieStore = await cookies();
+    const token:string|undefined = cookieStore.get("token")?.value;
+    await axios.delete(`${process.env.API_BASE_URL}/api/user/${userName}/unfollow`,
+      {
+        headers:{
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${token}`
+        },
+        data:{}
+      }
+    )
+  }catch(e){
+    console.log(e);
+    throw new Error("フォロー解除に失敗しました");
+  }
+}

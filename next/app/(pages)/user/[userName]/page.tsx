@@ -1,7 +1,8 @@
 import React from "react";
 import Link from "next/link";
-import { deleteXweet, getUserData,getUserPage } from "@/src/lib/actions";
+import { createFollow,deleteFollow,deleteXweet, getUserData,getUserPage } from "@/src/lib/actions";
 import { redirect } from "next/navigation";
+import { revalidatePath } from "next/cache";
 
 type Props={
   params:Promise<{userName:string}>;
@@ -25,9 +26,38 @@ export default async function Page({params}:Props) {
     redirect("/error/403");
   }
 
+    const tryCreateFollow = async() =>{
+    "use server";
+    try{
+      await createFollow((await params).userName);
+      const res = await getUserPage((await params).userName,loginUserId);
+      data = res;
+    }catch(e){
+      console.log((e as Error).message);
+      redirect("/error/403");
+    }
+    revalidatePath(`/user/${(await params).userName}`);
+  }
+
+  const tryDeleteFollow = async() =>{
+    "use server";
+    try{
+      await deleteFollow((await params).userName);
+      const res = await getUserPage((await params).userName,loginUserId);
+      data = res;
+    }catch(e){
+      console.log((e as Error).message);
+      redirect("/error/403");
+    }
+    revalidatePath(`/user/${(await params).userName}`);
+  }
+
   return(
     <>
       <p>ユーザ{data.displayName}のページ</p>
+      {(loginUserId && loginUserId!==data.id && !data.isFollowing)?<form action={tryCreateFollow}><button type="submit">フォローする</button></form>:''}
+      {(loginUserId && loginUserId!==data.id && data.isFollowing)?<form action={tryDeleteFollow}><button type="submit">フォロー解除</button></form>:''}
+
       <div>
         {data.xweets?.map((xweet:any)=>(
           <React.Fragment key={xweet.id}>

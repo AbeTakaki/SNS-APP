@@ -7,7 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Services\FollowsService;
 use App\Services\UserService;
-use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Response;
 
 class UnFollowUserController extends Controller
 {
@@ -19,12 +19,12 @@ class UnFollowUserController extends Controller
         string $userName,
         FollowsService $followsService,
         UserService $userService,
-    ): RedirectResponse
+    ): Response
     {
         $following = Auth::id();
         $follower = $userService->getUserByUserName($userName)->id;
 
         $followsService->deleteFollow($following, $follower);
-        return redirect()->route('user.index', ['userName'=>$userName]);
+        return response()->noContent();
     }
 }
