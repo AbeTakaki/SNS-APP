@@ -180,3 +180,43 @@ export const deleteXweet = async (xweetId:number) => {
     throw new Error("Xweet削除に失敗しました。");
   }
 }
+
+export const getFollows = async (userName:string) => {
+  try {
+    const cookieStore = await cookies();
+    const token:string|undefined = cookieStore.get("token")?.value;
+    const res = await axios.get(`${process.env.API_BASE_URL}/api/user/${userName}/follows`,
+      {
+        headers:{
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${token}`,
+        },
+        data:{}
+      }
+    )
+    return res.data;
+  } catch (e) {
+    console.log(e);
+    throw new Error("フォローユーザー取得に失敗しました。");
+  }
+}
+
+export const getFollowers = async (userName:string) =>{
+  try{
+    const cookieStore = await cookies();
+    const token:string|undefined = cookieStore.get("token")?.value;
+    const res = await axios.get(`${process.env.API_BASE_URL}/api/user/${userName}/followers`,
+      {
+        headers:{
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${token}`
+        },
+        data:{}
+      }
+    )
+    return res.data;
+  }catch(e){
+    console.log(e);
+    throw new Error("フォロワー取得に失敗しました");
+  }
+}
