@@ -67,9 +67,11 @@ export default async function Page({params}:Props) {
   return(
     <>
       <p>ユーザ{data.displayName}のページ</p>
+      <p>{data.profile}</p>
       {(loginUserId && loginUserId!==data.id && !data.isFollowing)?<form action={tryCreateFollow}><button type="submit">フォローする</button></form>:''}
       {(loginUserId && loginUserId!==data.id && data.isFollowing)?<form action={tryDeleteFollow}><button type="submit">フォロー解除</button></form>:''}
       {(loginUserId && loginUserId!==data.id)?<form action={tryMoveChatRoom}><button type="submit">チャットを開始</button></form>:''}
+      {(loginUserId && loginUserId===data.id)?<Link href={`/user/${data.userName}/edit`}>プロフィール編集画面へ</Link>:''}
       <div>
         {data.xweets?.map((xweet:any)=>(
           <React.Fragment key={xweet.id}>

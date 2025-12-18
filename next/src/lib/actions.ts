@@ -332,3 +332,47 @@ export const moveChatRoom = async (userName:string) =>{
     throw new Error("チャットルームへの移動に失敗しました");
   }
 }
+
+export const canEditProfile = async (userName:string) =>{
+  try{
+    const cookieStore = await cookies();
+    const token:string|undefined = cookieStore.get("token")?.value;
+    const res = await axios.get(`${process.env.API_BASE_URL}/api/user/${userName}/edit`,
+      {
+        headers:{
+          "Authorization": `Bearer ${token}`
+        },
+      }
+    )
+    return res.data;
+  }catch(e){
+    console.log(e);
+    throw new Error("プロフィール更新許可がありません");
+  }
+}
+
+export const editProfile = async (data:FormData, userName:string) =>{
+  try{
+    const input1:string = String(data.get("input1"));
+    const input2:string = String(data.get("input2"));
+
+    const form = new FormData();
+    form.append('_method', 'PUT');
+    form.append('input1',input1);
+    form.append('input2',input2);
+
+    const cookieStore = await cookies();
+    const token:string|undefined = cookieStore.get("token")?.value;
+    await axios.post(`${process.env.API_BASE_URL}/api/user/${userName}/edit`,
+      form,
+      {
+        headers:{
+          "Content-Type": "multipart/form-data",
+          "Authorization": `Bearer ${token}`,
+        },
+      }
+    )
+  }catch(e:any){
+    return e.response.data.message;
+  }
+}
