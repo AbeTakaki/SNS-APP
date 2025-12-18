@@ -25,7 +25,7 @@ class FollowUserController extends Controller
         // ログインしているユーザーのIDを取得
         $following = Auth::id();
         // フォロー対象のidを取得
-        $follower = $userService->getUserByUserName($userName)->id;
+        $follower = $userService->getUserByUserName($userName)->resource->id;
 
         $followsService->createFollow($following, $follower);
 

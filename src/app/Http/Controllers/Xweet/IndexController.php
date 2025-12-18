@@ -15,7 +15,7 @@ class IndexController extends Controller
         if ($request->id) {
             $loginId = $request->id;
             $xweets = $xweetService->getFollowsXweets($loginId);
-            $loginUserName = $userService->getUserById($loginId)->user_name;
+            $loginUserName = $userService->getUserById($loginId)->resource->user_name;
 
             return response()->json([
                 'userName' => $loginUserName,

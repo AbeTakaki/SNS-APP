@@ -16,7 +16,7 @@ class DeleteController extends Controller
     public function __invoke(Request $request, XweetService $xweetService): Response
     {
         $xweetId = (int)$request->route('xweetId');
-        $xweet = $xweetService->getXweetById($xweetId);
+        $xweet = $xweetService->getXweetById($xweetId)->resource;
         if(Auth::user()->cannot('delete', $xweet)) abort(403);
         $xweetService->deleteXweet($xweetId);
         return response()->noContent();

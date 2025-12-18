@@ -21,7 +21,7 @@ class EditPutController extends Controller
         ImageService $imageService,
     ): Response
     {
-        $user = $userService->getUserByUserName($userName);
+        $user = $userService->getUserByUserName($userName)->resource;
         if(Auth::user()->cannot('update', $user)) abort(403);
             
         $userService->setDisplayName($user->id, $request->getInput1());

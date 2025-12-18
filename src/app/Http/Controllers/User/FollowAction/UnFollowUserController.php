@@ -22,7 +22,7 @@ class UnFollowUserController extends Controller
     ): Response
     {
         $following = Auth::id();
-        $follower = $userService->getUserByUserName($userName)->id;
+        $follower = $userService->getUserByUserName($userName)->resource->id;
 
         $followsService->deleteFollow($following, $follower);
         return response()->noContent();
