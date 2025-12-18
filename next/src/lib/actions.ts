@@ -89,3 +89,15 @@ export const register = async (data:FormData) => {
     throw new Error("ユーザー新規登録に失敗しました。");
   }
 }
+
+export const getXweet = async (userId?:number|null) => {
+  try {
+    let res;
+    if(!userId) res = await axios.get(`${process.env.API_BASE_URL}/api/xweet`);
+    else res = await axios.get(`${process.env.API_BASE_URL}/api/xweet?id=${userId}`);
+    return res.data;
+  } catch(e){
+    console.log(e);
+    throw new Error("Xweetの取得に失敗しました。");
+  }
+}

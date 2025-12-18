@@ -11,7 +11,7 @@ export default function Page(){
   const tryLogin = async (data:FormData) =>{
     try{
       await login(data);
-      router.push("/auth");      
+      router.push("/xweet");
     }catch(e){
       setError((e as Error).message);
     }

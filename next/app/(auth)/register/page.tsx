@@ -19,7 +19,7 @@ export default function Page() {
     if(pas1 === pas2) {
       try {
         await register(data);
-        router.push("/auth");
+        router.push("/xweet");
       } catch (e) {
         setError((e as Error).message);
       }
