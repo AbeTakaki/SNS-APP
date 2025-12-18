@@ -1,51 +1,12 @@
-"use client"
+import Auth from "@/src/components/auth"
+import PostForm from "@/src/components/element/postform"
 
-import { createXweet, getUserData } from "@/src/lib/actions";
-import { useRouter } from "next/navigation"
-import { useEffect, useState } from "react";
-
-export default function Page() {
-  const router = useRouter();
-  const [error, setError] = useState<string|null>(null);
-  const [isLogin,setIsLogin] = useState<boolean>(false);
-
-  useEffect(() => {
-    const tryGetUserData = async() => {
-      try {
-        await getUserData();
-        setIsLogin(true);
-      } catch (e) {
-        console.log((e as Error).message);
-        router.push("/login");
-      }
-    }
-    tryGetUserData();
-  },[])
-
-  const tryCreateXweet = async (data:FormData) => {
-    const res = await createXweet(data);
-    if(res) {
-      setError(res);
-    }else{
-      router.push("/xweet");
-    }
-  }
-
+export default function Page(){
   return(
     <>
-      {isLogin &&
-        <div>
-          <h1>Xweet作成画面</h1>
-          <div>
-            <p>投稿フォーム</p>
-            <form action={tryCreateXweet}>
-              <textarea id="xweet-content" name="xweet" className="block mt-1 bg-gray-100 text-gray-700"></textarea>
-              <button type="submit">投稿</button>
-              {error && <p className="text-red-500">{error}</p>}
-            </form>
-          </div>
-        </div>
-      }
+      <Auth>
+        <PostForm />
+      </Auth>
     </>
   )
 }
