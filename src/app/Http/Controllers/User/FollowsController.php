@@ -14,7 +14,7 @@ class FollowsController extends Controller
      */
     public function __invoke(string $userName, UserService $userService): JsonResponse
     {
-        $user = $userService->getUserByUserName($userName);
+        $user = $userService->getUserByUserName($userName)->resource;
         $users = $userService->getFollowsProfiles($user->id);
 
         return response()->json([

@@ -1,6 +1,7 @@
 "use client";
 
 import { canEditProfile, editProfile } from "@/src/lib/actions";
+import { user } from "@/src/types/types";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
@@ -11,7 +12,7 @@ type Props={
 export default function Page({params}:Props) {
   const router = useRouter();
   const [error,setError] = useState<string|null>(null);
-  const [data,setData] = useState<any>(null);
+  const [data,setData] = useState<user>();
 
   useEffect(()=>{
     const tryCanEditProfile = async() =>{
@@ -53,7 +54,7 @@ export default function Page({params}:Props) {
                   id="input1" 
                   className="block mt-1 bg-gray-100 text-gray-700"
                   placeholder="Enter your name" 
-                  defaultValue={data.displayName} 
+                  defaultValue={data.display_name}
               />
 
               <p>自己紹介</p>

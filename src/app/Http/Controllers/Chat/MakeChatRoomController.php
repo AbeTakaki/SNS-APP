@@ -21,7 +21,7 @@ class MakeChatRoomController extends Controller
     ): JsonResponse
     {
         $user1 = Auth::id();
-        $user2 = $userService->getUserByUserName($userName)->id;
+        $user2 = $userService->getUserByUserName($userName)->resource->id;
 
         $chatRoomId = $chatService->createChatRoom($user1, $user2);
         return response()->json(['chatId'=>$chatRoomId],Response::HTTP_OK);

@@ -3,6 +3,7 @@ import Link from "next/link";
 import { createFollow,deleteFollow,deleteXweet, getUserData,getUserPage, moveChatRoom } from "@/src/lib/actions";
 import { redirect } from "next/navigation";
 import { revalidatePath } from "next/cache";
+import { xweet } from "@/src/types/types";
 
 type Props={
   params:Promise<{userName:string}>;
@@ -73,11 +74,11 @@ export default async function Page({params}:Props) {
       {(loginUserId && loginUserId!==data.id)?<form action={tryMoveChatRoom}><button type="submit">チャットを開始</button></form>:''}
       {(loginUserId && loginUserId===data.id)?<Link href={`/user/${data.userName}/edit`}>プロフィール編集画面へ</Link>:''}
       <div>
-        {data.xweets?.map((xweet:any)=>(
+        {data.xweets?.map((xweet:xweet)=>(
           <React.Fragment key={xweet.id}>
-            {xweet.content} by {xweet.user.display_name} posted on {xweet.created_at}
-            {(loginUserId && loginUserId===xweet.user.id)?<Link href={`/xweet/update/${xweet.id}`}> 更新</Link>:''}
-            {(loginUserId && loginUserId===xweet.user.id)?
+            {xweet.content} by {xweet.user?.display_name} posted on {xweet.created_at}
+            {(loginUserId && loginUserId===xweet.user?.id)?<Link href={`/xweet/update/${xweet.id}`}> 更新</Link>:''}
+            {(loginUserId && loginUserId===xweet.user?.id)?
               <form action={
                 async()=>{
                   "use server";

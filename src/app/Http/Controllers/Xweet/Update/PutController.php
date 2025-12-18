@@ -15,7 +15,7 @@ class PutController extends Controller
      */
     public function __invoke(UpdateRequest $request, XweetService $xweetService) : Response
     {
-        $xweet = $xweetService->getXweetById($request->getId());
+        $xweet = $xweetService->getXweetById($request->getId())->resource;
         if(Auth::user()->cannot('update', $xweet)) abort(403);
         $xweetService->updateXweet($request->getId(), $request->getXweet());
         return response()->noContent();

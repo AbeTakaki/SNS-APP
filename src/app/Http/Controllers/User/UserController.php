@@ -28,7 +28,7 @@ class UserController extends Controller
         FollowsService $followsService
     ) : JsonResponse
     {
-        $user = $userService->getUserByUserName($userName);
+        $user = $userService->getUserByUserName($userName)->resource;
         $xweets = $xweetService->getUserXweets($user->id);
         
         $isFollowing = false;

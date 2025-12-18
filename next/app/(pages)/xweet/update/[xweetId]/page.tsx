@@ -3,6 +3,7 @@
 import { canUpdateXweet, updateXweet } from "@/src/lib/actions";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
+import { xweet } from "@/src/types/types";
 
 
 type Props = {
@@ -12,15 +13,13 @@ type Props = {
 export default function Page({params}:Props) {
   const router = useRouter();
   const [error, setError] = useState<string|null>(null);
-  const [canUpdate, setCanUpdate] = useState<boolean>(false);
-  const [data, setData] = useState<any>(null);
+  const [data, setData] = useState<xweet>();
 
   useEffect(() => {
     const tryCanUpdateXweet = async() => {
       try {
         const res = await canUpdateXweet((await params).xweetId);
         setData(res);
-        setCanUpdate(true);
       }catch(e) {
         console.log((e as Error).message);
         router.push("/error/403");
@@ -40,7 +39,7 @@ export default function Page({params}:Props) {
 
   return(
     <>
-      {canUpdate &&
+      {data &&
         <div>
           <h1>Xweet更新画面</h1>
           <div>
@@ -50,7 +49,7 @@ export default function Page({params}:Props) {
                 id="xweet-content" 
                 name="xweet" 
                 className="block mt-1 bg-gray-100 text-gray-700"
-                defaultValue={data.xweet.content}
+                defaultValue={data.content}
               />
               <button type="submit">更新</button>
               {error && <p className="text-red-500">{error}</p>}

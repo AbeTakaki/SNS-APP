@@ -24,8 +24,8 @@ class ChatController extends Controller
     {
         $chat = $chatService->getChatById($chatId);
         if(Auth::user()->cannot('enter', $chat)) abort(403);
-        $user1 = $userService->getUserById($chat->user1_id);
-        $user2 = $userService->getUserById($chat->user2_id);
+        $user1 = $userService->getUserById($chat->user1_id)->resource;
+        $user2 = $userService->getUserById($chat->user2_id)->resource;
         $users = array($user1->display_name,$user2->display_name);
         $messages = $messageService->getMessagesByChatId($chatId);
 

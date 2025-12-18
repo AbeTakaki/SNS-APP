@@ -2,6 +2,7 @@ import React from "react";
 import Link from "next/link";
 import { getFollowers } from "@/src/lib/actions";
 import { redirect } from "next/navigation";
+import { user } from "@/src/types/types";
 
 type Props={
   params:Promise<{userName:string}>;
@@ -20,7 +21,7 @@ export default async function Page({params}:Props) {
   return(
     <>
       <p>{data.displayName}さんのフォロワー</p>
-      {data.users?.map((user:any)=>(
+      {data.users?.map((user:user)=>(
         <React.Fragment key={user.id}>
           <p><Link href={`/user/${user.user_name}`}>{user.display_name}</Link></p>
         </React.Fragment>

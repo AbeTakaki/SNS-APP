@@ -3,6 +3,7 @@
 import React, { useEffect, useState } from "react";
 import { getMessages, getUserData, createMessage } from "@/src/lib/actions";
 import { useRouter } from "next/navigation";
+import { chat, message } from "@/src/types/types";
 
 type Props={
   params:Promise<{chatId:number}>;
@@ -11,7 +12,7 @@ type Props={
 export default function Page({params}:Props) {
   const router = useRouter();
   const [userId,setUserId] = useState<number>(0);
-  const [data,setData] = useState<any>();
+  const [data,setData] = useState<chat>();
   const [error,setError] = useState<string|null>(null);
 
   useEffect(()=>{
@@ -54,7 +55,7 @@ export default function Page({params}:Props) {
         <div>
           <p>{data.users[0]}と{data.users[1]}の部屋</p>
           <div>
-            {data.messages?.map((message:any)=>(
+            {data.messages?.map((message:message)=>(
               <React.Fragment key={message.id}>
                 {(userId && userId===message.mentioned_user_id)?<p className="text-blue-600/100">{message.content} posted on {message.created_at}</p>:''}
                 {(userId && userId!==message.mentioned_user_id)?<p>{message.content} posted on {message.created_at}</p>:''}            
