@@ -2,6 +2,7 @@ import { deleteXweet, getUserData, getXweet } from "@/src/lib/actions";
 import { redirect } from "next/navigation";
 import Link from "next/link";
 import React from "react";
+import { xweet } from "@/src/types/types";
 
 export default async function Page() {
   let xweets;
@@ -24,11 +25,11 @@ export default async function Page() {
   return(
     <>
       <div>
-        {xweets?.map((xweet:any) =>(
+        {xweets?.map((xweet:xweet) =>(
           <React.Fragment key={xweet.id}>
-            {xweet.content} by {xweet.user.display_name} posted on {xweet.created_at}
-            {(userId && userId===xweet.user.id)?<Link href={`/xweet/update/${xweet.id}`}> 更新</Link>:''}
-            {(userId && userId===xweet.user.id)?
+            {xweet.content} by {xweet.user?.display_name} posted on {xweet.created_at}
+            {(userId && userId===xweet.user?.id)?<Link href={`/xweet/update/${xweet.id}`}> 更新</Link>:''}
+            {(userId && userId===xweet.user?.id)?
             <form action={
               async() => {
                 "use server";

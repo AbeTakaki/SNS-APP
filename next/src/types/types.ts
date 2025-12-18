@@ -18,7 +18,7 @@ export type xweet = {
   content: string,
   created_at: string,
   updated_at: string,
-  uset?: user,
+  user?: user,
 }
 
 export type message = {
@@ -26,7 +26,7 @@ export type message = {
   chat_id: number,
   mentioned_user_id: number,
   content: string,
-  cteated_at: string,
+  created_at: string,
   updated_at: string,
 }
 
