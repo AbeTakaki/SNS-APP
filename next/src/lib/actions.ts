@@ -310,3 +310,25 @@ export const createMessage = async (data:FormData, chatId:number) =>{
     return error.response.data.message;
   }
 }
+
+export const moveChatRoom = async (userName:string) =>{
+  try{
+    const cookieStore = await cookies();
+    const token:string|undefined = cookieStore.get("token")?.value;
+    const res = await axios.post(`${process.env.API_BASE_URL}/api/user/${userName}/chat`,
+      {
+        userName: userName,
+      },
+      {
+        headers:{
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${token}`
+        },
+      }
+    )
+    return res.data;
+  }catch(e){
+    console.log(e);
+    throw new Error("チャットルームへの移動に失敗しました");
+  }
+}

@@ -1,6 +1,6 @@
 import React from "react";
 import Link from "next/link";
-import { createFollow,deleteFollow,deleteXweet, getUserData,getUserPage } from "@/src/lib/actions";
+import { createFollow,deleteFollow,deleteXweet, getUserData,getUserPage, moveChatRoom } from "@/src/lib/actions";
 import { redirect } from "next/navigation";
 import { revalidatePath } from "next/cache";
 
@@ -51,13 +51,25 @@ export default async function Page({params}:Props) {
     }
     revalidatePath(`/user/${(await params).userName}`);
   }
+  const tryMoveChatRoom = async() =>{
+    "use server";
+    let chatId;
+    try{
+      const res = await moveChatRoom((await params).userName);
+      chatId = res.chatId;
+    }catch(e){
+      console.log((e as Error).message);
+      redirect("/error/403");
+    }
+    redirect(`/chat/${chatId}`);
+  }
 
   return(
     <>
       <p>ユーザ{data.displayName}のページ</p>
       {(loginUserId && loginUserId!==data.id && !data.isFollowing)?<form action={tryCreateFollow}><button type="submit">フォローする</button></form>:''}
       {(loginUserId && loginUserId!==data.id && data.isFollowing)?<form action={tryDeleteFollow}><button type="submit">フォロー解除</button></form>:''}
-
+      {(loginUserId && loginUserId!==data.id)?<form action={tryMoveChatRoom}><button type="submit">チャットを開始</button></form>:''}
       <div>
         {data.xweets?.map((xweet:any)=>(
           <React.Fragment key={xweet.id}>
