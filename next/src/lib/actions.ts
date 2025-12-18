@@ -121,3 +121,43 @@ export const createXweet = async (data:FormData) => {
     return e.response.data.message;
   }
 }
+
+export const canUpdateXweet = async (xweetId:number) => {
+  try {
+    const cookieStore = await cookies();
+    const token:string|undefined = cookieStore.get("token")?.value;
+    const res = await axios.get(`${process.env.API_BASE_URL}/api/xweet/update/${xweetId}`,
+      {
+        headers:{
+          "Content-Type": "applocation/json",
+          "Authorization": `Bearer ${token}`
+        },
+        data:{}
+      }
+    )
+    return res.data;
+  } catch (e) {
+    console.log(e);
+    throw new Error("更新許可がありません");
+  }
+}
+
+export const updateXweet = async (data:FormData, xweetId:number) => {
+  try {
+    const cookieStore = await cookies();
+    const token:string|undefined = cookieStore.get("token")?.value;
+    await axios.put(`${process.env.API_BASE_URL}/api/xweet/update/${xweetId}`,
+      {
+        xweet: data.get("xweet"),
+      },
+      {
+        headers:{
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${token}`,
+        },
+      }
+    )
+  } catch (e:any) {
+    return e.response.data.message;
+  }
+}
