@@ -19,7 +19,11 @@ export default function MessagePostForm({userId,chatId}:Props){
     const tryGetMessages = async () =>{
       try{
         const res = await getMessages(chatId);
-        setData(res);
+        if(res.messages){
+          setData(res);
+        }else{
+          setError(res.message);
+        }
       }catch(e){
         console.log((e as Error).message);
       }
@@ -48,7 +52,11 @@ export default function MessagePostForm({userId,chatId}:Props){
       setError(res);
     }
     const res2 = await getMessages(chatId);
-    setData(res2);
+    if(res2.messages){
+      setData(res2);
+    }else{
+      setError(res2.message);
+    }
   }
 
   return(

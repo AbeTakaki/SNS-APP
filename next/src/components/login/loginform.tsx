@@ -11,8 +11,12 @@ export default function LoginForm(){
 
   const tryLogin = async (data:FormData) =>{
     try{
-      await login(data);
-      router.push("/xweet");      
+      const res = await login(data);
+      if(res){
+        setError(res);
+      }else{
+        router.push("/xweet");
+      }
     }catch(e){
       setError((e as Error).message);
     }

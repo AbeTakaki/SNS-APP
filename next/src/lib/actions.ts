@@ -24,9 +24,11 @@ export const login = async (data:FormData) =>{
       httpOnly: true,
     });
   }catch(e){
-    console.log(e);
-    throw new Error("EmailまたはPasswordに誤りがあります");
-  }  
+    if(axios.isAxiosError(e)) {
+      return "Email または Password に誤りがあります。";
+    }
+    throw new Error("予期せぬエラーが発生しました。");
+  }
 }
 
 export const getUserData = async () =>{
@@ -85,8 +87,10 @@ export const register = async (data:FormData) => {
     );
     await login(data);
   } catch (e) {
-    console.log(e);
-    throw new Error("ユーザー新規登録に失敗しました。");
+    if(axios.isAxiosError(e)) {
+      return "ユーザ新規登録に失敗しました";
+    }
+    throw new Error("予期せぬエラーが発生しました。");
   }
 }
 
@@ -119,7 +123,7 @@ export const createXweet = async (data:FormData) => {
     )
   } catch (e) {
     if (axios.isAxiosError(e)){
-      return e.response?.data.message;
+      if(e.response?.data.status===422) return e.response?.data.message;
     }
     throw new Error("予期せぬエラーが発生しました。");
   }
@@ -162,7 +166,7 @@ export const updateXweet = async (data:FormData, xweetId:number) => {
     )
   } catch (e) {
     if (axios.isAxiosError(e)){
-      return e.response?.data.message;
+      if(e.response?.data.status===422) return e.response?.data.message;
     }
     throw new Error("予期せぬエラーが発生しました。");
   }
@@ -292,8 +296,16 @@ export const getMessages = async (chatId:number) =>{
     );
     return res.data;
   }catch(e){
-    console.log(e);
-    throw new Error("メッセージ取得に失敗しました");
+    if(axios.isAxiosError(e)) {
+      const status = e.response?.data.status;
+      if(status===401 || status===403 || status==404){
+        return{
+          status: status,
+          message: "メッセージ取得に失敗しました",
+        }
+      }
+    }
+    throw new Error("予期せぬエラーが発生しました");
   }
 }
 
@@ -314,7 +326,7 @@ export const createMessage = async (data:FormData, chatId:number) =>{
     )
   } catch (e) {
     if (axios.isAxiosError(e)){
-      return e.response?.data.message;
+      if(e.response?.data.status===422) return e.response?.data.message;
     }
     throw new Error("予期せぬエラーが発生しました。");
   }
@@ -387,7 +399,7 @@ export const editProfile = async (data:FormData, userName:string) =>{
     )
   } catch (e) {
     if (axios.isAxiosError(e)){
-      return e.response?.data.message;
+      if(e.response?.data.status===422) return e.response?.data.message;
     }
     throw new Error("予期せぬエラーが発生しました。");
   }
