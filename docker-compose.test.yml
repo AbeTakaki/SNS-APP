@@ -18,7 +18,7 @@ services:
       context: .
     volumes:
       - ./src:/var/www/html
-    entrypoint: 
+    environment: 
       - APP_ENV=testing
     networks:
       - sns-app
