@@ -6,6 +6,8 @@ import { createFollow, deleteFollow, getUserData, getUserPage, moveChatRoom } fr
 import ButtonPost from "@/src/components/element/buttonpost";
 import LinkGet from "@/src/components/element/linkget";
 import XweetList from "@/src/components/xweet/xweetlist";
+import ImageFrame from "@/src/components/element/imageframe";
+import { LOCAL_DEFAULT_IMAGE_URL, S3_DEFAULT_IMAGE_URL } from "@/src/constants";
 
 type Props={
   params:Promise<{userName:string}>;
@@ -73,6 +75,12 @@ export default async function Page({params}:Props) {
       <div className="h-8"></div>
       <div className="flex justify-between">
         <div className="flex">
+          {data.imagePath?
+            <ImageFrame path={data.imagePath} size={120} /> :
+            process.env.NODE_ENV === "production"?
+            <ImageFrame path={S3_DEFAULT_IMAGE_URL} size={120} />:
+            <ImageFrame path={LOCAL_DEFAULT_IMAGE_URL} size={120} />
+          }
           <div className="ml-8">
             <h2 id="displayname" className="text-3xl font-bold mb-4">{data.displayName}</h2>
             <p id="profile">{data.profile}</p>
