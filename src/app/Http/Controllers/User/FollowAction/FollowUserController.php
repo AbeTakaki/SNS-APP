@@ -3,13 +3,12 @@
 namespace App\Http\Controllers\User\FollowAction;
 
 use App\Http\Controllers\Controller;
-use App\Models\Follows;
-use App\Models\User;
 use App\Services\FollowsService;
 use App\Services\UserService;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Response;
 
 class FollowUserController extends Controller
 {
@@ -21,15 +20,15 @@ class FollowUserController extends Controller
         string $userName,
         FollowsService $followsService,
         UserService $userService,
-    ): RedirectResponse
+    ): JsonResponse
     {
         // ログインしているユーザーのIDを取得
         $following = Auth::id();
         // フォロー対象のidを取得
-        $follower = $userService->getUserByUserName($userName)->id;
+        $follower = $userService->getUserByUserName($userName)->resource->id;
 
         $followsService->createFollow($following, $follower);
 
-        return redirect()->route('user.index', ['userName'=>$userName]);
+        return response()->json([],Response::HTTP_CREATED);
     }
 }

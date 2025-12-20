@@ -1,8 +1,10 @@
 <?php
 
 namespace App\Services;
+
+use App\Http\Resources\XweetResource;
 use App\Models\Xweet;
-use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 
 class XweetService {
     private $followService;
@@ -20,10 +22,10 @@ class XweetService {
         $xweet->save();
     }
 
-    public function getXweetById(int $id): Xweet
+    public function getXweetById(int $id): XweetResource
     {
         $xweet = Xweet::where('id', $id)->FirstOrFail();
-        return $xweet;
+        return new XweetResource($xweet);
     }
 
     public function updateXweet(int $id, string $content): void
@@ -39,13 +41,13 @@ class XweetService {
         $xweet->delete();
     }
 
-    public function getAllXweets(): Collection
+    public function getAllXweets(): AnonymousResourceCollection
     {
         $xweets = Xweet::with('user.image')->orderBy('created_at', 'DESC')->get();
-          return $xweets;
+          return XweetResource::collection($xweets);
     }
 
-    public function getFollowsXweets(int $userId): Collection
+    public function getFollowsXweets(int $userId): AnonymousResourceCollection
     {
         $users = $this->followService->getFollows($userId);
         $followUserIds = array(
@@ -58,12 +60,12 @@ class XweetService {
 
         $xweets = Xweet::with('user.image')->whereIn('user_id', $followUserIds)->orderBy('created_at', 'DESC')->get();
 
-        return $xweets;
+        return XweetResource::collection($xweets);
     }
 
-    public function getUserXweets(int $userId): Collection
+    public function getUserXweets(int $userId): AnonymousResourceCollection
     {
         $xweets = Xweet::with('user.image')->where('user_id', $userId)->orderBy('created_at', 'DESC')->get();
-        return $xweets;
+        return XweetResource::collection($xweets);
     }
 }

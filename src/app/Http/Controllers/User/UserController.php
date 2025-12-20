@@ -2,13 +2,13 @@
 
 namespace App\Http\Controllers\User;
 
-use Illuminate\View\View;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 use App\Services\FollowsService;
 use App\Services\UserService;
 use App\Services\XweetService;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Response;
 
 /**
  * Class UserController
@@ -26,13 +26,13 @@ class UserController extends Controller
         UserService $userService,
         XweetService $xweetService,
         FollowsService $followsService
-    ) : View
+    ) : JsonResponse
     {
-        $user = $userService->getUserByUserName($userName);
+        $user = $userService->getUserByUserName($userName)->resource;
         $xweets = $xweetService->getUserXweets($user->id);
         
         $isFollowing = false;
-        $following = Auth::id();
+        $following = $request->id;
         if ($following){
             $follower = $user->id;
             $isFollowing = $followsService->isFollow($following, $follower);
@@ -43,7 +43,7 @@ class UserController extends Controller
             $imagePath = $user->getImagePath();
         }
 
-        return view('user.index')->with([
+        return response()->json([
             'id' => $user->id,
             'userName' => $user->user_name,
             'displayName' => $user->display_name,
@@ -51,6 +51,6 @@ class UserController extends Controller
             'imagePath' => $imagePath,
             'xweets' => $xweets,
             'isFollowing' => $isFollowing,
-        ]);
+        ], Response::HTTP_OK);
     }
 }

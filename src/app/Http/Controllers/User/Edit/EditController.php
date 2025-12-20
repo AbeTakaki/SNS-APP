@@ -3,25 +3,26 @@
 namespace App\Http\Controllers\User\Edit;
 
 use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use App\Models\User;
 use App\Services\UserService;
-use Illuminate\View\View;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Response;
 
 class EditController extends Controller
 {
     /**
      * Handle the incoming request.
      */
-    public function __invoke(Request $request, string $userName, UserService $userService): View
+    public function __invoke(string $userName, UserService $userService): JsonResponse
     {
-        $user = $userService->getUserByUserName($userName);
+        $user = $userService->getUserByUserName($userName)->resource;
         if(Auth::user()->cannot('update',$user)) abort(403);
-        return view('user.edit')->with([
-            'userName' => $user->user_name,
-            'displayName' => $user->display_name,
-            'profile' => $user->profile
-       ]);
+        return response()->json([
+            'id' => $user->id,
+            'user_name' => $user->user_name,
+            'display_name' => $user->display_name,
+            'profile' => $user->profile,
+            'profile_image_id' => $user->profile_image_id,
+       ],Response::HTTP_OK);
     }
 }
