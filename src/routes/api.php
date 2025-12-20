@@ -20,6 +20,13 @@ use App\Http\Controllers\Xweet\Delete\DeleteController;
 use App\Http\Controllers\Xweet\IndexController;
 use App\Http\Controllers\Xweet\Update\PutController;
 use App\Http\Controllers\Xweet\Update\UpdateController;
+use App\Models\Chat;
+use App\Models\Follows;
+use Illuminate\Http\Response;
+use Illuminate\Support\Facades\Artisan;
+use App\Models\User;
+use App\Models\Xweet;
+use Illuminate\Support\Facades\Storage;
 
 Route::get('/test', function(Request $request) {
     return response()->json([
@@ -89,4 +96,83 @@ Route::prefix('user')->group(function () {
         // ルートの競合を避けるため、chat関連は下にまとめることを推奨しますが、ここでは元の位置を尊重しつつ修正
         Route::post('{userName}/chat', MakeChatRoomController::class); 
     });
+});
+
+// テスト用のルーティング
+Route::post('/test/reset-db', function () {
+    if(env('APP_ENV') === 'production') {
+        return response()->json(['error' => 'Forbidden'], Response::HTTP_FORBIDDEN);
+    }
+    Artisan::call('migrate:fresh --seed');
+    return response()->json(['message' => 'Database reset'], Response::HTTP_OK);
+});
+
+Route::post('/test/create-testuser', function () {
+   if (env('APP_ENV') === 'production') {
+      return response()->json(['error' => 'Forbidden'], Response::HTTP_FORBIDDEN);
+   }
+   $user = User::factory()->create([
+      'profile'=>'Test User',
+   ]);
+
+   return response()->json([
+      'id' => $user->id,
+      'user_name' => $user->user_name,
+      'display_name' => $user->display_name,
+      'email' => $user->email,
+      'profile' => $user->profile,
+   ],Response::HTTP_CREATED);
+});
+
+Route::post('/test/create-testxweet', function (Request $request) {
+   if (env('APP_ENV') === 'production') {
+      return response()->json(['error' => 'Forbidden'], Response::HTTP_FORBIDDEN);
+   }
+   $xweet = Xweet::factory()->create([
+      'user_id'=>$request->user_id,
+      'content'=>$request->xweet,
+   ]);
+   return response()->json([
+      'id' => $xweet->id,
+   ],Response::HTTP_CREATED);
+});
+
+Route::post('/test/create-testfollow', function (Request $request) {
+   if (env('APP_ENV') === 'production') {
+      return response()->json(['error' => 'Forbidden'], Response::HTTP_FORBIDDEN);
+   }
+   $follow = Follows::factory()->create([
+      'following_user_id'=>$request->following_id,
+      'followed_user_id'=>$request->followed_id,
+   ]);
+   return response()->json([
+      'id' => $follow->id,
+   ],Response::HTTP_CREATED);
+});
+
+Route::post('/test/clear-image-disk', function (Request $request) {
+   if (env('APP_ENV') === 'production') {
+      return response()->json(['error' => 'Forbidden'], Response::HTTP_FORBIDDEN);
+   }
+   $user=User::where(['user_name'=>$request->user_name,])->first();
+   if(env('APP_ENV') === 'ci'){
+      $path=$user->getImagePath();
+      $div=preg_split("/\//",$path);
+      Storage::disk('s3')->delete(end($div));
+   }else{
+      Storage::disk('public')->delete($user->getImagePath());
+   }
+});
+
+Route::post('/test/create-testchat', function (Request $request) {
+   if (env('APP_ENV') === 'production') {
+      return response()->json(['error' => 'Forbidden'], Response::HTTP_FORBIDDEN);
+   }
+   $chat=Chat::factory()->create([
+      'user1_id'=>$request->user1_id,
+      'user2_id'=>$request->user2_id,
+   ]);
+   return response()->json([
+      'id' => $chat->id,
+   ],Response::HTTP_CREATED);
 });
