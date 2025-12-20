@@ -25,6 +25,7 @@ export default function EditForm({userName,displayName,profile}:Props){
       }
     }catch(e){
       console.log(e);
+      setError("プロフィール画像には 1024 キロバイト以下の画像を指定してください。");
     }
   }
 
@@ -58,7 +59,18 @@ export default function EditForm({userName,displayName,profile}:Props){
           <label className="text-m text-gray-700 block mb-1 font-bold">
             プロフィール画像
           </label>
-          {/* ここに画像アップロード機能を実装予定 */}
+          <input 
+            type="file" 
+            accept="image/jpeg,image/jpg,image/png,image/gif"
+            name="input3" 
+            id="input3" 
+            className="block w-full text-sm text-slate-500
+                file:mr-4 file:py-2 file:px-4
+                file:rounded-full file:border-0
+                file:text-sm file:font-semibold
+                file:bg-gray-50 file:text-gray-700
+                hover:file:bg-gray-100" 
+          />
         </div>
 
         {error && <p id="error-message" className="text-red-500">{error}</p>}
