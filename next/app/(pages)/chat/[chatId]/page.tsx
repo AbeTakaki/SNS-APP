@@ -1,6 +1,7 @@
 import Auth from "@/src/components/auth";
 import MessagePostForm from "@/src/components/chat/messagepostform";
 import { getMessages, getUserData } from "@/src/lib/actions";
+import { errorRedirect } from "@/src/lib/navigations";
 import { redirect } from "next/navigation";
 import React from "react";
 
@@ -19,10 +20,13 @@ export default async function Page({params}:Props) {
   }
 
   try{
-    await getMessages((await params).chatId);
+    const res = await getMessages((await params).chatId);
+    if(!res.messages){
+      throw Object.assign(new Error(res),{statusCode:res.status});
+    }
   }catch(e){
-    console.log((e as Error).message);
-    redirect("/error/403");
+    await errorRedirect((e as Error & { statusCode?: number }).statusCode);
+    throw new Error("予期せぬエラーが発生しました");
   }
 
   return(

@@ -24,9 +24,11 @@ export const login = async (data:FormData) =>{
       httpOnly: true,
     });
   }catch(e){
-    console.log(e);
-    throw new Error("EmailまたはPasswordに誤りがあります");
-  }  
+    if(axios.isAxiosError(e)) {
+      return "Email または Password に誤りがあります。";
+    }
+    throw new Error("予期せぬエラーが発生しました。");
+  }
 }
 
 export const getUserData = async () =>{
@@ -44,9 +46,11 @@ export const getUserData = async () =>{
     )
     return res.data;
   }catch(e){
-    console.log(e);
-    throw new Error("アクセス許可がありません");
-  }
+    if(axios.isAxiosError(e)){
+      throw Object.assign(new Error(e.response?.data.message),{statusCode:e.response?.data.status});
+    }
+    throw new Error("予期せぬエラーが発生しました");
+    }
 }
 
 export const logout = async () =>{
@@ -64,8 +68,10 @@ export const logout = async () =>{
     );
     cookieStore.delete("token");
   }catch(e){
-    console.log(e);
-    throw new Error("ログアウトに失敗しました");
+    if(axios.isAxiosError(e)){
+      throw Object.assign(new Error(e.response?.data.message),{statusCode:e.response?.data.status});
+    }
+    throw new Error("予期せぬエラーが発生しました");
   }
 }
 
@@ -85,8 +91,10 @@ export const register = async (data:FormData) => {
     );
     await login(data);
   } catch (e) {
-    console.log(e);
-    throw new Error("ユーザー新規登録に失敗しました。");
+    if(axios.isAxiosError(e)) {
+      return "ユーザ新規登録に失敗しました";
+    }
+    throw new Error("予期せぬエラーが発生しました。");
   }
 }
 
@@ -97,8 +105,10 @@ export const getXweet = async (userId?:number|null) => {
     else res = await axios.get(`${process.env.API_BASE_URL}/api/xweet?id=${userId}`);
     return res.data;
   } catch(e){
-    console.log(e);
-    throw new Error("Xweetの取得に失敗しました。");
+    if(axios.isAxiosError(e)){
+      throw Object.assign(new Error(e.response?.data.message),{statusCode:e.response?.data.status});
+    }
+    throw new Error("予期せぬエラーが発生しました");
   }
 }
 
@@ -119,7 +129,7 @@ export const createXweet = async (data:FormData) => {
     )
   } catch (e) {
     if (axios.isAxiosError(e)){
-      return e.response?.data.message;
+      if(e.response?.data.status===422) return e.response?.data.message;
     }
     throw new Error("予期せぬエラーが発生しました。");
   }
@@ -140,8 +150,10 @@ export const canUpdateXweet = async (xweetId:number) => {
     )
     return res.data;
   } catch (e) {
-    console.log(e);
-    throw new Error("更新許可がありません");
+    if(axios.isAxiosError(e)){
+      throw Object.assign(new Error(e.response?.data.message),{statusCode:e.response?.data.status});
+    }
+    throw new Error("予期せぬエラーが発生しました");
   }
 }
 
@@ -162,7 +174,7 @@ export const updateXweet = async (data:FormData, xweetId:number) => {
     )
   } catch (e) {
     if (axios.isAxiosError(e)){
-      return e.response?.data.message;
+      if(e.response?.data.status===422) return e.response?.data.message;
     }
     throw new Error("予期せぬエラーが発生しました。");
   }
@@ -182,8 +194,10 @@ export const deleteXweet = async (xweetId:number) => {
       }
     )
   } catch (e) {
-    console.log(e);
-    throw new Error("Xweet削除に失敗しました。");
+    if(axios.isAxiosError(e)){
+      throw Object.assign(new Error(e.response?.data.message),{statusCode:e.response?.data.status});
+    }
+    throw new Error("予期せぬエラーが発生しました");
   }
 }
 
@@ -202,8 +216,10 @@ export const getFollows = async (userName:string) => {
     )
     return res.data;
   } catch (e) {
-    console.log(e);
-    throw new Error("フォローユーザー取得に失敗しました。");
+    if(axios.isAxiosError(e)){
+      throw Object.assign(new Error(e.response?.data.message),{statusCode:e.response?.data.status});
+    }
+    throw new Error("予期せぬエラーが発生しました");
   }
 }
 
@@ -222,8 +238,10 @@ export const getFollowers = async (userName:string) =>{
     )
     return res.data;
   }catch(e){
-    console.log(e);
-    throw new Error("フォロワー取得に失敗しました");
+    if(axios.isAxiosError(e)){
+      throw Object.assign(new Error(e.response?.data.message),{statusCode:e.response?.data.status});
+    }
+    throw new Error("予期せぬエラーが発生しました");
   }
 }
 
@@ -234,8 +252,10 @@ export const getUserPage = async (userName:string,loginId?:number|null) =>{
     else res = await axios.get(`${process.env.API_BASE_URL}/api/user/${userName}?id=${loginId}`)
     return res.data;
   }catch(e){
-    console.log(e);
-    throw new Error("ユーザ情報取得に失敗しました");
+    if(axios.isAxiosError(e)){
+      throw Object.assign(new Error(e.response?.data.message),{statusCode:e.response?.data.status});
+    }
+    throw new Error("予期せぬエラーが発生しました");
   }
 }
 
@@ -253,8 +273,10 @@ export const createFollow = async (userName:string) =>{
       }
     )
   }catch(e){
-    console.log(e);
-    throw new Error("フォローに失敗しました");
+    if(axios.isAxiosError(e)){
+      throw Object.assign(new Error(e.response?.data.message),{statusCode:e.response?.data.status});
+    }
+    throw new Error("予期せぬエラーが発生しました");
   }
 }
 
@@ -272,8 +294,10 @@ export const deleteFollow = async (userName:string) =>{
       }
     )
   }catch(e){
-    console.log(e);
-    throw new Error("フォロー解除に失敗しました");
+    if(axios.isAxiosError(e)){
+      throw Object.assign(new Error(e.response?.data.message),{statusCode:e.response?.data.status});
+    }
+    throw new Error("予期せぬエラーが発生しました");
   }
 }
 
@@ -292,8 +316,16 @@ export const getMessages = async (chatId:number) =>{
     );
     return res.data;
   }catch(e){
-    console.log(e);
-    throw new Error("メッセージ取得に失敗しました");
+    if(axios.isAxiosError(e)) {
+      const status = e.response?.data.status;
+      if(status===401 || status===403 || status==404){
+        return{
+          status: status,
+          message: "メッセージ取得に失敗しました",
+        }
+      }
+    }
+    throw new Error("予期せぬエラーが発生しました");
   }
 }
 
@@ -314,7 +346,7 @@ export const createMessage = async (data:FormData, chatId:number) =>{
     )
   } catch (e) {
     if (axios.isAxiosError(e)){
-      return e.response?.data.message;
+      if(e.response?.data.status===422) return e.response?.data.message;
     }
     throw new Error("予期せぬエラーが発生しました。");
   }
@@ -337,8 +369,10 @@ export const moveChatRoom = async (userName:string) =>{
     )
     return res.data;
   }catch(e){
-    console.log(e);
-    throw new Error("チャットルームへの移動に失敗しました");
+    if(axios.isAxiosError(e)){
+      throw Object.assign(new Error(e.response?.data.message),{statusCode:e.response?.data.status});
+    }
+    throw new Error("予期せぬエラーが発生しました");
   }
 }
 
@@ -355,8 +389,10 @@ export const canEditProfile = async (userName:string) =>{
     )
     return res.data;
   }catch(e){
-    console.log(e);
-    throw new Error("プロフィール更新許可がありません");
+    if(axios.isAxiosError(e)){
+      throw Object.assign(new Error(e.response?.data.message),{statusCode:e.response?.data.status});
+    }
+    throw new Error("予期せぬエラーが発生しました");
   }
 }
 
@@ -387,7 +423,7 @@ export const editProfile = async (data:FormData, userName:string) =>{
     )
   } catch (e) {
     if (axios.isAxiosError(e)){
-      return e.response?.data.message;
+      if(e.response?.data.status===422) return e.response?.data.message;
     }
     throw new Error("予期せぬエラーが発生しました。");
   }

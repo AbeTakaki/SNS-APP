@@ -1,7 +1,8 @@
 import Auth from "@/src/components/auth";
 import UpdateForm from "@/src/components/xweet/updateform";
 import { canUpdateXweet } from "@/src/lib/actions";
-import { redirect } from "next/navigation";
+import { errorRedirect } from "@/src/lib/navigations";
+export const dynamic = 'force-dynamic';
 
 type Props={
   params:Promise<{xweetId:number}>;
@@ -13,8 +14,8 @@ export default async function Page({params}:Props){
     const res = await canUpdateXweet((await params).xweetId);
     data = res;
   }catch(e){
-    console.log((e as Error).message);
-    redirect("/error/403");
+    await errorRedirect((e as Error & { statusCode?: number }).statusCode);
+    throw new Error("予期せぬエラーが発生しました");
   }
 
   return(

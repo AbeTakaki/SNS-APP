@@ -19,8 +19,12 @@ export default function RegisterForm(){
     const pas2 = data.get("confirm_password");
     if(pas1===pas2){
       try{
-        await register(data);
-        router.push("/xweet");   
+        const res = await register(data);
+        if(res){
+          setError(res);
+        }else{
+          router.push("/xweet");
+        }
       }catch(e){
         setError((e as Error).message);
       }
