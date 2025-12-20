@@ -3,6 +3,8 @@ import Link from "next/link";
 import { redirect } from "next/navigation";
 import React from "react";
 import { xweet } from "../../types/types"
+import ImageFrame from "../element/imageframe";
+import { LOCAL_DEFAULT_IMAGE_URL, S3_DEFAULT_IMAGE_URL } from "@/src/constants";
 
 type Props = {
   loginUserId: number;
@@ -18,7 +20,12 @@ export default function XweetList({loginUserId,xweets}:Props){
             <li className="border-b last:border-0 border-gray-200 p-4" key={xweet.id}>
               
               <div className="flex">
-              
+                {xweet.user?.image?
+                  <ImageFrame path={xweet.user.image.path} size={60} /> :
+                  process.env.NODE_ENV === "production"?
+                  <ImageFrame path={S3_DEFAULT_IMAGE_URL} size={60} />:
+                  <ImageFrame path={LOCAL_DEFAULT_IMAGE_URL} size={60} />
+                }
                 <div className="ml-4">
                   <span className="inline-block rounded-full px-2 py-1 text-s font-bold mb-1">
                     <Link href={`/user/${xweet.user?.user_name}`}>{xweet.user?.display_name}</Link>
