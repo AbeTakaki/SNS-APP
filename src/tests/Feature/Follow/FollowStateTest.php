@@ -5,7 +5,7 @@ use App\Models\Xweet;
 use App\Models\Follows;
 
 $users=array(5);
-$xweets=array(5);
+$Xweets=array(5);
 $names=array(5);
 $follows=array(4);
 
@@ -22,7 +22,7 @@ beforeEach(function(){
         ]);
     }
     for($i=0;$i<5;$i++){
-        $this->xweets[$i]=Xweet::factory()->create([
+        $this->Xweets[$i]=Xweet::factory()->create([
             'id'=>$i+1,
             'user_id'=>$this->users[$i]->id,
             'content'=>'I am '.$this->users[$i]->user_name,
@@ -52,29 +52,26 @@ beforeEach(function(){
 });
 
 test('非ログイン時、全ユーザのXweetが表示される', function(){
-    $response = $this->get('/xweet');
+    $response = $this->get('/api/xweet');
     for($i=0;$i<5;$i++){
         $response->assertSee('I am '.$this->users[$i]->user_name);
     }
 });
 
 test('非ログイン時、フォローリストを表示しようとするとログイン画面にリダイレクト', function(){
-    $response = $this->get('/user/'.$this->users[2]->user_name.'/follows');
-    $response->assertRedirect('/login');
+    $response = $this->get('/api/user/'.$this->users[2]->user_name.'/follows');
+    $response->assertStatus(401);
 });
 
 test('非ログイン時、フォロワーリストを表示しようとするとログイン画面にリダイレクト', function(){
-    $response = $this->get('/user/'.$this->users[2]->user_name.'/followers');
-    $response->assertRedirect('/login');
+    $response = $this->get('/api/user/'.$this->users[2]->user_name.'/followers');
+    $response->assertStatus(401);
 });
 
 test('ログイン時、自分及びフォロー中のユーザのXweetのみが表示される', function(){
-    $response=$this->post('/login', [
-        'email' => $this->users[2]->email,
-        'password' => 'password',
-    ]);
-    
-    $response = $this->get('/xweet');
+    // /api/xweet へのgetリクエストはtokenを付与しないため、token作成は省略
+    $response = $this->get('/api/xweet/?id='.$this->users[2]->id);
+
     for($i=0;$i<2;$i++){
         $response->assertDontSee('I am '.$this->users[$i]->user_name);
     }
@@ -84,11 +81,10 @@ test('ログイン時、自分及びフォロー中のユーザのXweetのみが
 });
 
 test('ログイン時、フォローリストにフォロー中のユーザが表示される', function(){
-    $this->post('/login', [
-        'email' => $this->users[2]->email,
-        'password' => 'password',
+    $token = $this->users[2]->createToken('AccessToken')->plainTextToken;
+    $response = $this->get('/api/user/'.$this->users[2]->user_name.'/follows',[
+        'Authorization' => 'Bearer '.$token,
     ]);
-    $response = $this->get('/user/'.$this->users[2]->user_name.'/follows');
     for($i=0;$i<2;$i++){
         $response->assertDontSee($this->users[$i]->user_name);
     }
@@ -98,11 +94,10 @@ test('ログイン時、フォローリストにフォロー中のユーザが�
 });
 
 test('ログイン時、フォロワーリストに自分をフォローしているユーザが表示される', function(){
-    $this->post('/login', [
-        'email' => $this->users[2]->email,
-        'password' => 'password',
+    $token = $this->users[2]->createToken('AccessToken')->plainTextToken;
+    $response = $this->get('/api/user/'.$this->users[2]->user_name.'/followers',[
+        'Authorization' => 'Bearer '.$token,
     ]);
-    $response = $this->get('/user/'.$this->users[2]->user_name.'/followers');
     for($i=3;$i<5;$i++){
         $response->assertDontSee($this->users[$i]->user_name);
     }
