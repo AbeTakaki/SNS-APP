@@ -102,6 +102,7 @@ jobs:
         run: docker compose -f docker-compose.e2e.yml up --build --abort-on-container-exit --exit-code-from e2e
 
       - name: Remove .env file
+        run: |
           rm src/.env
           rm next/.env.local
           rm e2e/.env
