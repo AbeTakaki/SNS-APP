@@ -3,64 +3,42 @@
 use App\Models\User;
 
 $user;
-beforeEach(function() {
+beforeEach(function(){
     $this->user = User::factory()->create();
 });
 
-test('非ログイン時、Xweet投稿画面に移動するとログイン画面にリダイレクト', function(){
-    $response = $this->get('/xweet/create');
-    $response->assertRedirect('/login');
-});
-
 test('非ログイン時、Xweet投稿しようとするとログイン画面にリダイレクト', function(){
-    $response = $this->post('/xweet/create',[
+    $response = $this->post('/api/xweet/create',[
         'xweet'=>'Test Xweet',
     ]);
-    
-    $response->assertRedirect('/login');
+    $response->assertStatus(401);
 });
 
-test('ログイン後、Xweet投稿画面に移動できる', function(){
-    $this->post('/login', [
-        'email' => $this->user->email,
-        'password' => 'password',
+test('ログイン後、Xweet投稿しレスポンスが返る', function(){
+    $token = $this->user->createToken('AccessToken')->plainTextToken;
+    $response = $this->post('/api/xweet/create',[
+        'xweet'=>'Test Xweet',
+    ],[
+        'Authorization' => 'Bearer '.$token,
     ]);
-    $response = $this->get('/xweet/create');
-    $response->assertStatus(200);
+    $response->assertStatus(201);
 });
 
-test('ログイン後、xweet投稿しレスポンスが返る', function(){
-    $this->post('/login', [
-        'email' => $this->user->email,
-        'password' => 'password',
+test('ログイン後、Xweet投稿しDBが更新される', function(){
+    $token = $this->user->createToken('AccessToken')->plainTextToken;
+    $this->post('/api/xweet/create',[
+        'xweet'=>'Test Xweet',
+    ],[
+        'Authorization' => 'Bearer '.$token,
     ]);
-    $response = $this->post('/xweet/create',[
-        'xweet'=>'Test xweet',
-    ]);
-    
-    $response->assertRedirect('/xweet');
-    $response = $this->get('/xweet');
-    $response->assertSee('Test xweet');
-});
-
-test('ログイン後、xweet投稿しDBが更新される', function(){
-    $this->post('/login', [
-        'email' => $this->user->email,
-        'password' => 'password',
-    ]);
-    $this->post('/xweet/create',[
-        'xweet'=>'Test xweet',
-    ]);
-
-    $this->assertDatabaseHas('xweets',['content'=>'Test xweet']);
+    $this->assertDatabaseHas('xweets',['content'=>'Test Xweet']);
 });
 
 test('ログイン後、バリデーションを満たさない内容は投稿できない', function(){
-    $this->post('/login', [
-        'email' => $this->user->email,
-        'password' => 'password',
-    ]);
-    $response = $this->post('/xweet/create',[
+    $token = $this->user->createToken('AccessToken')->plainTextToken;
+    $response = $this->post('/api/xweet/create',[
         'xweet'=>'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,',
-    ])->assertInvalid(['xweet'=>'つぶやき は 140 文字以下で入力してください',]);
+    ],[
+        'Authorization' => 'Bearer '.$token,
+    ])->assertStatus(422)->assertJson(['message'=>'つぶやき は 140 文字以下で入力してください',]);
 });

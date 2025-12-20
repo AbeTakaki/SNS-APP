@@ -2,40 +2,42 @@
 
 use App\Models\User;
 
-test('login screen can be rendered', function () {
-    $response = $this->get('/login');
-
-    $response->assertStatus(200);
-});
-
 test('users can authenticate using the login screen', function () {
     $user = User::factory()->create();
 
-    $response = $this->post('/login', [
+    $response = $this->post('/api/login', [
         'email' => $user->email,
         'password' => 'password',
     ]);
 
-    $this->assertAuthenticated();
-    $response->assertRedirect('/xweet');
+    $response->assertStatus(201);
 });
 
 test('users can not authenticate with invalid password', function () {
     $user = User::factory()->create();
 
-    $this->post('/login', [
+    $response = $this->post('/api/login', [
         'email' => $user->email,
         'password' => 'wrong-password',
     ]);
 
-    $this->assertGuest();
+    $response->assertStatus(401);
 });
 
 test('users can logout', function () {
     $user = User::factory()->create();
 
-    $response = $this->actingAs($user)->post('/logout');
+    $response = $this->post('/api/login', [
+        'email' => $user->email,
+        'password' => 'password',
+    ]);
 
-    $this->assertGuest();
-    $response->assertRedirect('/xweet');
+    $content = $response->content();
+    $content_array = json_decode($content,true);
+    $token = $content_array['token'];
+
+    $response2 = $this->post('/api/logout',[],[
+        'Authorization' => 'Bearer '.$token,
+    ]);
+    $response2->assertStatus(201);
 });

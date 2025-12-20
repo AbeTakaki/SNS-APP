@@ -19,35 +19,30 @@ beforeEach(function(){
 });
 
 test('非ログイン時、Xweet削除しようとするとログイン画面にリダイレクト', function(){
-    $response = $this->delete('/xweet/delete/1');
-    $response->assertRedirect('/login');
+    $response = $this->delete('/api/xweet/delete/1');
+    $response->assertStatus(401);
 });
 
 test('別ユーザでは、Xweet削除できない', function(){
-    $this->post('/login', [
-        'email' => $this->user2->email,
-        'password' => 'password',
+    $token = $this->user2->createToken('AccessToken')->plainTextToken;
+    $response = $this->delete('/api/xweet/delete/1',[],[
+        'Authorization' => 'Bearer '.$token,
     ]);
-    $response = $this->delete('/xweet/delete/1');
     $response->assertStatus(403);
 });
 
 test('ログイン後、Xweet削除しレスポンスが返る', function(){
-    $this->post('/login', [
-        'email' => $this->user->email,
-        'password' => 'password',
+    $token = $this->user->createToken('AccessToken')->plainTextToken;
+    $response = $this->delete('/api/xweet/delete/1',[],[
+        'Authorization' => 'Bearer '.$token,
     ]);
-    $response = $this->delete('/xweet/delete/1');
-    $response->assertRedirect('/xweet');
-    $response = $this->get('/xweet');
-    $response->assertDontSee('Test Xweet');
+    $response->assertStatus(204);
 });
 
 test('ログイン後、Xweet削除しDBが更新される', function(){
-    $this->post('/login', [
-        'email' => $this->user->email,
-        'password' => 'password',
+    $token = $this->user->createToken('AccessToken')->plainTextToken;
+    $this->delete('/api/xweet/delete/1',[],[
+        'Authorization' => 'Bearer '.$token,
     ]);
-    $this->delete('/xweet/delete/1');
     $this->assertDatabaseMissing('xweets',['content'=>'Test Xweet']);
 });
