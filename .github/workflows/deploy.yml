@@ -101,7 +101,7 @@ jobs:
       - name: Execute E2E test
         run: docker compose -f docker-compose.e2e.yml up --build --abort-on-container-exit --exit-code-from e2e
 
-      - name: Remove .env filef
+      - name: Remove .env file
           rm src/.env
           rm next/.env.local
           rm e2e/.env
