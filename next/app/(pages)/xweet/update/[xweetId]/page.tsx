@@ -2,6 +2,7 @@ import Auth from "@/src/components/auth";
 import UpdateForm from "@/src/components/xweet/updateform";
 import { canUpdateXweet } from "@/src/lib/actions";
 import { errorRedirect } from "@/src/lib/navigations";
+export const dynamic = 'force-dynamic';
 
 type Props={
   params:Promise<{xweetId:number}>;
