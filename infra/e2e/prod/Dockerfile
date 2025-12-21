@@ -1,4 +1,4 @@
-FROM --platform=linux/amd64 mcr.microsoft.com/playwright:v1.53.1-noble
+FROM mcr.microsoft.com/playwright:v1.57.0-noble
 
 WORKDIR /e2e
 

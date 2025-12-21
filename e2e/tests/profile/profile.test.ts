@@ -115,6 +115,6 @@ test('プロフィール編集 画像アップロード', async ({ page }) => {
 
 test('プロフィール編集 画像アップロード バリデーション', async ({ page }) => {
   await testLogin(page,user.email,'password');
-  await fillInvalidwithImage(page,'Display Name','Test User','img/large_icon.png','プロフィール画像 には 1024 キロバイト以下の画像を指定してください');
+  await fillInvalidwithImage(page,'Display Name','Test User','img/large_icon.png','プロフィール画像には 1024 キロバイト以下の画像を指定してください。');
   await fillInvalidwithImage(page,'Display Name','Test User','img/sample.txt','プロフィール画像 には画像を指定してください');
 });
