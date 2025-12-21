@@ -2,6 +2,7 @@ import React from "react";
 import XweetList from "@/src/components/xweet/xweetlist";
 import { getXweet,getUserData } from "@/src/lib/actions";
 import { errorRedirect } from "@/src/lib/navigations";
+export const dynamic = 'force-dynamic';
 
 export default async function Page() {
   let xweets;
