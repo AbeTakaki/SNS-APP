@@ -5,12 +5,9 @@ namespace App\Http\Controllers\User\Edit;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\User\EditRequest;
-use App\Models\User;
-use Illuminate\Http\RedirectResponse;
-use App\Models\Image;
 use App\Services\ImageService;
 use App\Services\UserService;
-use Illuminate\Support\Facades\Storage;
+use Illuminate\Http\Response;
 
 class EditPutController extends Controller
 {
@@ -22,9 +19,9 @@ class EditPutController extends Controller
         string $userName,
         UserService $userService,
         ImageService $imageService,
-    ): RedirectResponse
+    ): Response
     {
-        $user = $userService->getUserByUserName($userName);
+        $user = $userService->getUserByUserName($userName)->resource;
         if(Auth::user()->cannot('update', $user)) abort(403);
             
         $userService->setDisplayName($user->id, $request->getInput1());
@@ -42,6 +39,6 @@ class EditPutController extends Controller
             }
         }
         
-        return redirect()->route('user.index',['userName'=>$userName]);
+        return response()->noContent();
     }
 }

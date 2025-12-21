@@ -5,6 +5,8 @@ namespace App\Services;
 use App\Models\User;
 use App\Services\FollowsService;
 use Illuminate\Database\Eloquent\Collection;
+use App\Http\Resources\UserResource;
+use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 
 class UserService {
     private $followsService;
@@ -14,19 +16,19 @@ class UserService {
         $this->followsService = $followsService;
     }
 
-    public function getUserById(int $id): User
+    public function getUserById(int $id): UserResource
     {
         $user = User::where('id', $id)->firstOrFail();
-        return $user;
+        return new UserResource($user);
     }
 
-    public function getUserByUserName(string $userName): User
+    public function getUserByUserName(string $userName): UserResource
     {
         $user = User::where('user_name', $userName)->firstOrFail();
-        return $user;
+        return new UserResource($user);
     }
 
-    public function getFollowsProfiles(int $id): Collection
+    public function getFollowsProfiles(int $id): AnonymousResourceCollection
     {
         $followers = $this->followsService->getFollows($id);
         $userIds = array();
@@ -38,10 +40,11 @@ class UserService {
         }
 
         $users = User::with('image')->whereIn('id', $userIds)->get();
-        return $users;
+        return UserResource::collection($users);
     }
 
-    public function getFollowersProfiles(int $id):Collection{
+    public function getFollowersProfiles(int $id): AnonymousResourceCollection
+    {
         $follows=$this->followsService->getFollowers($id);
         $userIds=array();
         foreach($follows as $follow){
@@ -49,7 +52,7 @@ class UserService {
         }
 
         $users=User::with('image')->whereIn('id',$userIds)->get();
-        return $users;
+        return UserResource::collection($users);
     }
 
     public function setDisplayName(int $id, string $displayName): void

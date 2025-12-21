@@ -1,0 +1,30 @@
+{
+  "family": "xweet-next",
+  "runtimePlatform": {"operatingSystemFamily": "LINUX"},
+  "taskRoleArn": "arn:aws:iam::AWS_ACCOUNT_ID:role/xweet-ecs-task-role",
+  "executionRoleArn": "arn:aws:iam::AWS_ACCOUNT_ID:role/xweet-ecs-task-execution-role",
+  "networkMode": "awsvpc",
+  "requiresCompatibilities": ["FARGATE"],
+  "cpu": "256",
+  "memory": "512",
+  "containerDefinitions": [
+    {
+      "name":"next",
+      "image":"",
+      "logConfiguration":{
+        "logDriver":"awslogs",
+        "options":{
+          "awslogs-region":"ap-northeast-1",
+          "awslogs-group":"/ecs/xweet/next",
+          "awslogs-stream-prefix":"ecs"
+        }
+      },
+      "environmentFiles":[
+        {
+          "value":"arn:aws:s3:::xweet-laravel-abetaka-xweet-env-file/next/.env",
+          "type":"s3"
+        }
+      ]
+    }
+  ]
+}

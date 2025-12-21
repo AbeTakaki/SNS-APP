@@ -95,7 +95,9 @@ resource "aws_iam_policy" "ecs" {
           "ecs:DescribeServices",
         ]
         "Resource":[
-          "arn:aws:ecs:${data.aws_region.current.id}:${data.aws_caller_identity.current.account_id}:service/${local.app_name}-app-cluster/${local.app_name}",
+          "arn:aws:ecs:${data.aws_region.current.id}:${data.aws_caller_identity.current.account_id}:service/${local.app_name}-app-cluster/${local.app_name}-web",
+          "arn:aws:ecs:${data.aws_region.current.id}:${data.aws_caller_identity.current.account_id}:service/${local.app_name}-app-cluster/${local.app_name}-php",
+          "arn:aws:ecs:${data.aws_region.current.id}:${data.aws_caller_identity.current.account_id}:service/${local.app_name}-app-cluster/${local.app_name}-next",
           "arn:aws:ecs:${data.aws_region.current.id}:${data.aws_caller_identity.current.account_id}:service/${local.app_name}-app-cluster/migration-service",
         ]
       },

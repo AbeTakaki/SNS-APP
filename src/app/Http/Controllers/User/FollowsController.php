@@ -3,23 +3,23 @@
 namespace App\Http\Controllers\User;
 
 use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
 use App\Services\UserService;
-use Illuminate\View\View;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Response;
 
 class FollowsController extends Controller
 {
     /**
      * Handle the incoming request.
      */
-    public function __invoke(Request $request, string $userName, UserService $userService): View
+    public function __invoke(string $userName, UserService $userService): JsonResponse
     {
-        $user = $userService->getUserByUserName($userName);
+        $user = $userService->getUserByUserName($userName)->resource;
         $users = $userService->getFollowsProfiles($user->id);
 
-        return view('user.follows')->with([
+        return response()->json([
             'displayName' => $user->display_name,
             'users' => $users,
-        ]);
+        ],Response::HTTP_OK);
     }
 }
