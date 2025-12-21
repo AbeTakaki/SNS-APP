@@ -19,7 +19,7 @@ test.afterEach(async ({ page }) => {
 
 test('非ログイン時はチャットルームを閲覧できない', async ({ page }) => {
   await page.goto(`${process.env.TEST_FRONT_URL}/chat/${chat.id}`);
-  await page.waitForURL(`${process.env.TEST_FRONT_URL}/error/401`);
+  await page.waitForURL(`${process.env.TEST_FRONT_URL}/login`);
 });
 
 test('ルームメンバー以外はチャットルームを閲覧できない', async ({ page }) => {
